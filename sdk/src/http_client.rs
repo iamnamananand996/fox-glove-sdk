@@ -61,6 +61,47 @@ impl HttpClient {
         self.parse_response(response).await
     }
     
+    /// Execute a binary upload request with the given method, path, and options
+    pub async fn execute_binary_request<T>(
+        &self,
+        method: Method,
+        path: &str,
+        body: Vec<u8>,
+        content_type: &str,
+        query_params: Option<Vec<(String, String)>>,
+        options: Option<RequestOptions>,
+    ) -> Result<T, ClientError>
+    where
+        T: DeserializeOwned,
+    {
+        let url = format!("{}/{}", 
+            self.config.base_url.trim_end_matches('/'), 
+            path.trim_start_matches('/')
+        );
+        let mut request = self.client.request(method, &url);
+        
+        // Apply query parameters if provided
+        if let Some(params) = query_params {
+            request = request.query(&params);
+        }
+        
+        // Apply binary body with proper content type
+        request = request
+            .header("Content-Type", content_type)
+            .body(body);
+        
+        // Build the request
+        let mut req = request.build().map_err(ClientError::RequestError)?;
+        
+        // Apply authentication and headers
+        self.apply_auth_headers(&mut req, &options)?;
+        self.apply_custom_headers(&mut req, &options)?;
+        
+        // Execute with retries
+        let response = self.execute_with_retries(req, &options).await?;
+        self.parse_response(response).await
+    }
+    
     fn apply_auth_headers(&self, request: &mut Request, options: &Option<RequestOptions>) -> Result<(), ClientError> {
         let headers = request.headers_mut();
         
@@ -123,7 +164,19 @@ impl HttpClient {
                 
             match self.client.execute(cloned_request).await {
                 Ok(response) if response.status().is_success() => return Ok(response),
-                Ok(response) => return Err(ClientError::HttpError(response.status())),
+                Ok(response) => {
+                    let status = response.status();
+                    // Use the existing ApiError::from_response method for proper error handling
+                    if let Ok(error_text) = response.text().await {
+                        let api_error = crate::error::ApiError::from_response(
+                            status.as_u16(), 
+                            Some(&error_text)
+                        );
+                        return Err(ClientError::ApiError(api_error));
+                    }
+                    // Fallback to generic HTTP error if we can't read the response body
+                    return Err(ClientError::HttpError(status));
+                }
                 Err(e) if attempt < max_retries => {
                     last_error = Some(e);
                     // Exponential backoff

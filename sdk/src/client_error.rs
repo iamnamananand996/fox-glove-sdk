@@ -1,5 +1,7 @@
 use reqwest::StatusCode;
 
+use crate::error::ApiError;
+
 /// Errors that can occur when using the API client
 #[derive(Debug, thiserror::Error)]
 pub enum ClientError {
@@ -8,6 +10,9 @@ pub enum ClientError {
     
     #[error("HTTP error: {0}")]
     HttpError(StatusCode),
+    
+    #[error("API error: {0}")]
+    ApiError(#[from] ApiError),
     
     #[error("Request error: {0}")]
     RequestError(reqwest::Error),

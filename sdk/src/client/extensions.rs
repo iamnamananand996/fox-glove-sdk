@@ -13,10 +13,11 @@ impl ExtensionsClient {
     }
 
     pub async fn publish_an_extension(&self, request: &Vec<u8>, options: Option<RequestOptions>) -> Result<PostExtensionUploadResponse, ClientError> {
-        self.http_client.execute_request(
+        self.http_client.execute_binary_request(
             Method::POST,
             "extension-upload",
-            Some(serde_json::to_value(request).unwrap_or_default()),
+            request.clone(),
+            "application/octet-stream",
             None,
             options,
         ).await
