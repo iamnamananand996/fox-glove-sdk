@@ -1,4 +1,4 @@
-use crate::{ClientConfig, ClientError, HttpClient, RequestOptions};
+use crate::{ClientConfig, ApiError, HttpClient, RequestOptions};
 use reqwest::{Method};
 use crate::{types::*};
 
@@ -7,12 +7,12 @@ pub struct RecordingAttachmentsClient {
 }
 
 impl RecordingAttachmentsClient {
-    pub fn new(config: ClientConfig) -> Result<Self, ClientError> {
+    pub fn new(config: ClientConfig) -> Result<Self, ApiError> {
         let http_client = HttpClient::new(config)?;
         Ok(Self { http_client })
     }
 
-    pub async fn list_attachments(&self, recording_id: Option<String>, site_id: Option<String>, device_id: Option<String>, device_name: Option<String>, sort_by: Option<String>, sort_order: Option<GetRecordingAttachmentsRequestSortOrder>, limit: Option<f64>, offset: Option<i32>, options: Option<RequestOptions>) -> Result<Vec<RecordingAttachment>, ClientError> {
+    pub async fn list_attachments(&self, recording_id: Option<String>, site_id: Option<String>, device_id: Option<String>, device_name: Option<String>, sort_by: Option<String>, sort_order: Option<GetRecordingAttachmentsRequestSortOrder>, limit: Option<f64>, offset: Option<i32>, options: Option<RequestOptions>) -> Result<Vec<RecordingAttachment>, ApiError> {
         self.http_client.execute_request(
             Method::GET,
             "recording-attachments",
@@ -50,7 +50,7 @@ impl RecordingAttachmentsClient {
         ).await
     }
 
-    pub async fn get_an_attachment(&self, id: &String, options: Option<RequestOptions>) -> Result<RecordingAttachment, ClientError> {
+    pub async fn get_an_attachment(&self, id: &String, options: Option<RequestOptions>) -> Result<RecordingAttachment, ApiError> {
         self.http_client.execute_request(
             Method::GET,
             &format!("recording-attachments/{}", id),
@@ -60,7 +60,7 @@ impl RecordingAttachmentsClient {
         ).await
     }
 
-    pub async fn download_an_attachment(&self, id: &String, options: Option<RequestOptions>) -> Result<(), ClientError> {
+    pub async fn download_an_attachment(&self, id: &String, options: Option<RequestOptions>) -> Result<(), ApiError> {
         self.http_client.execute_request(
             Method::GET,
             &format!("recording-attachments/{}", id),

@@ -1,4 +1,4 @@
-use crate::{ClientConfig, ClientError, HttpClient, RequestOptions};
+use crate::{ClientConfig, ApiError, HttpClient, RequestOptions};
 use reqwest::{Method};
 use crate::{types::*};
 
@@ -7,12 +7,12 @@ pub struct TopicsClient {
 }
 
 impl TopicsClient {
-    pub fn new(config: ClientConfig) -> Result<Self, ClientError> {
+    pub fn new(config: ClientConfig) -> Result<Self, ApiError> {
         let http_client = HttpClient::new(config)?;
         Ok(Self { http_client })
     }
 
-    pub async fn list_topics(&self, start: Option<chrono::DateTime<chrono::Utc>>, end: Option<chrono::DateTime<chrono::Utc>>, import_id: Option<String>, recording_id: Option<String>, recording_key: Option<String>, device_id: Option<String>, device_name: Option<String>, include_schemas: Option<bool>, sort_by: Option<GetDataTopicsRequestSortBy>, sort_order: Option<GetDataTopicsRequestSortOrder>, limit: Option<f64>, offset: Option<i32>, options: Option<RequestOptions>) -> Result<Vec<Topic>, ClientError> {
+    pub async fn list_topics(&self, start: Option<chrono::DateTime<chrono::Utc>>, end: Option<chrono::DateTime<chrono::Utc>>, import_id: Option<String>, recording_id: Option<String>, recording_key: Option<String>, device_id: Option<String>, device_name: Option<String>, include_schemas: Option<bool>, sort_by: Option<GetDataTopicsRequestSortBy>, sort_order: Option<GetDataTopicsRequestSortOrder>, limit: Option<f64>, offset: Option<i32>, options: Option<RequestOptions>) -> Result<Vec<Topic>, ApiError> {
         self.http_client.execute_request(
             Method::GET,
             "data/topics",

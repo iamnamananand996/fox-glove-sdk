@@ -1,4 +1,4 @@
-use crate::{ClientConfig, ClientError, HttpClient, RequestOptions};
+use crate::{ClientConfig, ApiError, HttpClient, RequestOptions};
 use reqwest::{Method};
 use crate::{types::*};
 
@@ -7,12 +7,12 @@ pub struct LakeFilesClient {
 }
 
 impl LakeFilesClient {
-    pub fn new(config: ClientConfig) -> Result<Self, ClientError> {
+    pub fn new(config: ClientConfig) -> Result<Self, ApiError> {
         let http_client = HttpClient::new(config)?;
         Ok(Self { http_client })
     }
 
-    pub async fn list_lake_files(&self, site_id: Option<String>, device_id: Option<String>, device_name: Option<String>, recording_id: Option<String>, recording_key: Option<String>, start: Option<chrono::DateTime<chrono::Utc>>, end: Option<chrono::DateTime<chrono::Utc>>, topic: Option<String>, options: Option<RequestOptions>) -> Result<Vec<GetLakeFilesResponseItem>, ClientError> {
+    pub async fn list_lake_files(&self, site_id: Option<String>, device_id: Option<String>, device_name: Option<String>, recording_id: Option<String>, recording_key: Option<String>, start: Option<chrono::DateTime<chrono::Utc>>, end: Option<chrono::DateTime<chrono::Utc>>, topic: Option<String>, options: Option<RequestOptions>) -> Result<Vec<GetLakeFilesResponseItem>, ApiError> {
         self.http_client.execute_request(
             Method::GET,
             "lake-files",

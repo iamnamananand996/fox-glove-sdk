@@ -1,4 +1,4 @@
-use crate::{ClientConfig, ClientError, HttpClient, RequestOptions};
+use crate::{ClientConfig, ApiError, HttpClient, RequestOptions};
 use reqwest::{Method};
 use crate::{types::*};
 
@@ -7,12 +7,12 @@ pub struct ImportsClient {
 }
 
 impl ImportsClient {
-    pub fn new(config: ClientConfig) -> Result<Self, ClientError> {
+    pub fn new(config: ClientConfig) -> Result<Self, ApiError> {
         let http_client = HttpClient::new(config)?;
         Ok(Self { http_client })
     }
 
-    pub async fn list_imports(&self, device_id: Option<String>, filename: Option<String>, start: Option<chrono::DateTime<chrono::Utc>>, end: Option<chrono::DateTime<chrono::Utc>>, data_start: Option<chrono::DateTime<chrono::Utc>>, data_end: Option<chrono::DateTime<chrono::Utc>>, sort_by: Option<GetDataImportsRequestSortBy>, sort_order: Option<GetDataImportsRequestSortOrder>, limit: Option<f64>, offset: Option<i32>, options: Option<RequestOptions>) -> Result<Vec<Import>, ClientError> {
+    pub async fn list_imports(&self, device_id: Option<String>, filename: Option<String>, start: Option<chrono::DateTime<chrono::Utc>>, end: Option<chrono::DateTime<chrono::Utc>>, data_start: Option<chrono::DateTime<chrono::Utc>>, data_end: Option<chrono::DateTime<chrono::Utc>>, sort_by: Option<GetDataImportsRequestSortBy>, sort_order: Option<GetDataImportsRequestSortOrder>, limit: Option<f64>, offset: Option<i32>, options: Option<RequestOptions>) -> Result<Vec<Import>, ApiError> {
         self.http_client.execute_request(
             Method::GET,
             "data/imports",
@@ -56,7 +56,7 @@ impl ImportsClient {
         ).await
     }
 
-    pub async fn delete_multiple_imports(&self, id: Option<String>, options: Option<RequestOptions>) -> Result<DeleteDataImportsResponse, ClientError> {
+    pub async fn delete_multiple_imports(&self, id: Option<String>, options: Option<RequestOptions>) -> Result<DeleteDataImportsResponse, ApiError> {
         self.http_client.execute_request(
             Method::DELETE,
             "data/imports",
@@ -72,7 +72,7 @@ impl ImportsClient {
         ).await
     }
 
-    pub async fn delete_an_import(&self, import_id: &String, device_id: Option<String>, options: Option<RequestOptions>) -> Result<DeleteDataImportsImportIdResponse, ClientError> {
+    pub async fn delete_an_import(&self, import_id: &String, device_id: Option<String>, options: Option<RequestOptions>) -> Result<DeleteDataImportsImportIdResponse, ApiError> {
         self.http_client.execute_request(
             Method::DELETE,
             &format!("data/imports/{}", import_id),

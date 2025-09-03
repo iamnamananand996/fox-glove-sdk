@@ -1,4 +1,4 @@
-use crate::{ClientConfig, ClientError, HttpClient, RequestOptions};
+use crate::{ClientConfig, ApiError, HttpClient, RequestOptions};
 use reqwest::{Method};
 use crate::{types::*};
 
@@ -7,12 +7,12 @@ pub struct DevicesClient {
 }
 
 impl DevicesClient {
-    pub fn new(config: ClientConfig) -> Result<Self, ClientError> {
+    pub fn new(config: ClientConfig) -> Result<Self, ApiError> {
         let http_client = HttpClient::new(config)?;
         Ok(Self { http_client })
     }
 
-    pub async fn list_devices(&self, sort_by: Option<String>, query: Option<String>, sort_order: Option<GetDevicesRequestSortOrder>, limit: Option<f64>, offset: Option<i32>, options: Option<RequestOptions>) -> Result<Vec<Device>, ClientError> {
+    pub async fn list_devices(&self, sort_by: Option<String>, query: Option<String>, sort_order: Option<GetDevicesRequestSortOrder>, limit: Option<f64>, offset: Option<i32>, options: Option<RequestOptions>) -> Result<Vec<Device>, ApiError> {
         self.http_client.execute_request(
             Method::GET,
             "devices",
@@ -44,7 +44,7 @@ impl DevicesClient {
         ).await
     }
 
-    pub async fn create_a_device(&self, request: &serde_json::Value, options: Option<RequestOptions>) -> Result<Device, ClientError> {
+    pub async fn create_a_device(&self, request: &serde_json::Value, options: Option<RequestOptions>) -> Result<Device, ApiError> {
         self.http_client.execute_request(
             Method::POST,
             "devices",
@@ -54,7 +54,7 @@ impl DevicesClient {
         ).await
     }
 
-    pub async fn get_a_device(&self, name_or_id: &String, options: Option<RequestOptions>) -> Result<Device, ClientError> {
+    pub async fn get_a_device(&self, name_or_id: &String, options: Option<RequestOptions>) -> Result<Device, ApiError> {
         self.http_client.execute_request(
             Method::GET,
             &format!("devices/{}", name_or_id),
@@ -64,7 +64,7 @@ impl DevicesClient {
         ).await
     }
 
-    pub async fn delete_a_device(&self, name_or_id: &String, options: Option<RequestOptions>) -> Result<DeleteDevicesNameOrIdResponse, ClientError> {
+    pub async fn delete_a_device(&self, name_or_id: &String, options: Option<RequestOptions>) -> Result<DeleteDevicesNameOrIdResponse, ApiError> {
         self.http_client.execute_request(
             Method::DELETE,
             &format!("devices/{}", name_or_id),
@@ -74,7 +74,7 @@ impl DevicesClient {
         ).await
     }
 
-    pub async fn update_a_device(&self, name_or_id: &String, request: &serde_json::Value, options: Option<RequestOptions>) -> Result<Device, ClientError> {
+    pub async fn update_a_device(&self, name_or_id: &String, request: &serde_json::Value, options: Option<RequestOptions>) -> Result<Device, ApiError> {
         self.http_client.execute_request(
             Method::PATCH,
             &format!("devices/{}", name_or_id),

@@ -1,4 +1,4 @@
-use crate::{ClientConfig, ClientError, HttpClient, RequestOptions};
+use crate::{ClientConfig, ApiError, HttpClient, RequestOptions};
 use reqwest::{Method};
 use crate::{types::*};
 
@@ -7,12 +7,12 @@ pub struct SiteTokensClient {
 }
 
 impl SiteTokensClient {
-    pub fn new(config: ClientConfig) -> Result<Self, ClientError> {
+    pub fn new(config: ClientConfig) -> Result<Self, ApiError> {
         let http_client = HttpClient::new(config)?;
         Ok(Self { http_client })
     }
 
-    pub async fn list_site_tokens(&self, site_id: Option<String>, options: Option<RequestOptions>) -> Result<Vec<SiteToken>, ClientError> {
+    pub async fn list_site_tokens(&self, site_id: Option<String>, options: Option<RequestOptions>) -> Result<Vec<SiteToken>, ApiError> {
         self.http_client.execute_request(
             Method::GET,
             "site-tokens",
@@ -28,7 +28,7 @@ impl SiteTokensClient {
         ).await
     }
 
-    pub async fn create_a_site_token(&self, request: &serde_json::Value, options: Option<RequestOptions>) -> Result<PostSiteTokensResponse, ClientError> {
+    pub async fn create_a_site_token(&self, request: &serde_json::Value, options: Option<RequestOptions>) -> Result<PostSiteTokensResponse, ApiError> {
         self.http_client.execute_request(
             Method::POST,
             "site-tokens",
@@ -38,7 +38,7 @@ impl SiteTokensClient {
         ).await
     }
 
-    pub async fn delete_a_site_token(&self, id: &String, options: Option<RequestOptions>) -> Result<GenericSuccess, ClientError> {
+    pub async fn delete_a_site_token(&self, id: &String, options: Option<RequestOptions>) -> Result<GenericSuccess, ApiError> {
         self.http_client.execute_request(
             Method::DELETE,
             &format!("site-tokens/{}", id),

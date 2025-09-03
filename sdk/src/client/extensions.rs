@@ -1,4 +1,4 @@
-use crate::{ClientConfig, ClientError, HttpClient, RequestOptions};
+use crate::{ClientConfig, ApiError, HttpClient, RequestOptions};
 use reqwest::{Method};
 use crate::{types::*};
 
@@ -7,23 +7,22 @@ pub struct ExtensionsClient {
 }
 
 impl ExtensionsClient {
-    pub fn new(config: ClientConfig) -> Result<Self, ClientError> {
+    pub fn new(config: ClientConfig) -> Result<Self, ApiError> {
         let http_client = HttpClient::new(config)?;
         Ok(Self { http_client })
     }
 
-    pub async fn publish_an_extension(&self, request: &Vec<u8>, options: Option<RequestOptions>) -> Result<PostExtensionUploadResponse, ClientError> {
-        self.http_client.execute_binary_request(
+    pub async fn publish_an_extension(&self, request: &Vec<u8>, options: Option<RequestOptions>) -> Result<PostExtensionUploadResponse, ApiError> {
+        self.http_client.execute_request(
             Method::POST,
             "extension-upload",
-            request.clone(),
-            "application/octet-stream",
+            Some(serde_json::to_value(request).unwrap_or_default()),
             None,
             options,
         ).await
     }
 
-    pub async fn list_extensions(&self, options: Option<RequestOptions>) -> Result<Vec<Extension>, ClientError> {
+    pub async fn list_extensions(&self, options: Option<RequestOptions>) -> Result<Vec<Extension>, ApiError> {
         self.http_client.execute_request(
             Method::GET,
             "extensions",
@@ -33,7 +32,7 @@ impl ExtensionsClient {
         ).await
     }
 
-    pub async fn get_an_extension(&self, id: &String, options: Option<RequestOptions>) -> Result<ExtensionWithSignedLink, ClientError> {
+    pub async fn get_an_extension(&self, id: &String, options: Option<RequestOptions>) -> Result<ExtensionWithSignedLink, ApiError> {
         self.http_client.execute_request(
             Method::GET,
             &format!("extensions/{}", id),
@@ -43,7 +42,7 @@ impl ExtensionsClient {
         ).await
     }
 
-    pub async fn delete_an_extension(&self, id: &String, options: Option<RequestOptions>) -> Result<DeleteExtensionsIdResponse, ClientError> {
+    pub async fn delete_an_extension(&self, id: &String, options: Option<RequestOptions>) -> Result<DeleteExtensionsIdResponse, ApiError> {
         self.http_client.execute_request(
             Method::DELETE,
             &format!("extensions/{}", id),

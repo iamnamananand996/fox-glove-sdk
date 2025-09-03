@@ -1,4 +1,4 @@
-use crate::{ClientConfig, ClientError, HttpClient, RequestOptions};
+use crate::{ClientConfig, ApiError, HttpClient, RequestOptions};
 use reqwest::{Method};
 use crate::{types::*};
 
@@ -7,12 +7,12 @@ pub struct StreamDataClient {
 }
 
 impl StreamDataClient {
-    pub fn new(config: ClientConfig) -> Result<Self, ClientError> {
+    pub fn new(config: ClientConfig) -> Result<Self, ApiError> {
         let http_client = HttpClient::new(config)?;
         Ok(Self { http_client })
     }
 
-    pub async fn download_data(&self, request: &serde_json::Value, options: Option<RequestOptions>) -> Result<PostDataStreamResponse, ClientError> {
+    pub async fn download_data(&self, request: &serde_json::Value, options: Option<RequestOptions>) -> Result<PostDataStreamResponse, ApiError> {
         self.http_client.execute_request(
             Method::POST,
             "data/stream",

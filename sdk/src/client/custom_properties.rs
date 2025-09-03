@@ -1,4 +1,4 @@
-use crate::{ClientConfig, ClientError, HttpClient, RequestOptions};
+use crate::{ClientConfig, ApiError, HttpClient, RequestOptions};
 use reqwest::{Method};
 use crate::{types::*};
 
@@ -7,12 +7,12 @@ pub struct CustomPropertiesClient {
 }
 
 impl CustomPropertiesClient {
-    pub fn new(config: ClientConfig) -> Result<Self, ClientError> {
+    pub fn new(config: ClientConfig) -> Result<Self, ApiError> {
         let http_client = HttpClient::new(config)?;
         Ok(Self { http_client })
     }
 
-    pub async fn list_custom_properties(&self, resource_type: Option<String>, options: Option<RequestOptions>) -> Result<Vec<CustomProperty>, ClientError> {
+    pub async fn list_custom_properties(&self, resource_type: Option<String>, options: Option<RequestOptions>) -> Result<Vec<CustomProperty>, ApiError> {
         self.http_client.execute_request(
             Method::GET,
             "custom-properties",
@@ -28,7 +28,7 @@ impl CustomPropertiesClient {
         ).await
     }
 
-    pub async fn create_a_custom_property(&self, request: &NewCustomProperty, options: Option<RequestOptions>) -> Result<CustomProperty, ClientError> {
+    pub async fn create_a_custom_property(&self, request: &NewCustomProperty, options: Option<RequestOptions>) -> Result<CustomProperty, ApiError> {
         self.http_client.execute_request(
             Method::POST,
             "custom-properties",
@@ -38,7 +38,7 @@ impl CustomPropertiesClient {
         ).await
     }
 
-    pub async fn get_a_custom_property(&self, id: &String, options: Option<RequestOptions>) -> Result<CustomProperty, ClientError> {
+    pub async fn get_a_custom_property(&self, id: &String, options: Option<RequestOptions>) -> Result<CustomProperty, ApiError> {
         self.http_client.execute_request(
             Method::GET,
             &format!("custom-properties/{}", id),
@@ -48,7 +48,7 @@ impl CustomPropertiesClient {
         ).await
     }
 
-    pub async fn delete_a_custom_property(&self, id: &String, options: Option<RequestOptions>) -> Result<DeleteCustomPropertiesIdResponse, ClientError> {
+    pub async fn delete_a_custom_property(&self, id: &String, options: Option<RequestOptions>) -> Result<DeleteCustomPropertiesIdResponse, ApiError> {
         self.http_client.execute_request(
             Method::DELETE,
             &format!("custom-properties/{}", id),
@@ -58,7 +58,7 @@ impl CustomPropertiesClient {
         ).await
     }
 
-    pub async fn edit_a_custom_property(&self, id: &String, request: &serde_json::Value, options: Option<RequestOptions>) -> Result<CustomProperty, ClientError> {
+    pub async fn edit_a_custom_property(&self, id: &String, request: &serde_json::Value, options: Option<RequestOptions>) -> Result<CustomProperty, ApiError> {
         self.http_client.execute_request(
             Method::PATCH,
             &format!("custom-properties/{}", id),

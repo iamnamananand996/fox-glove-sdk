@@ -1,6 +1,6 @@
 use foxglove_api::{
     ApiClient, ApiClientBuilder,
-    ClientError, PostExtensionUploadResponse, ApiError
+    ApiError, PostExtensionUploadResponse
 };
 use chrono::{Utc, Duration};
 use std::env;
@@ -10,7 +10,6 @@ use serde_json::json;
 // Helper function to create a proper extension package
 fn create_test_extension_package() -> Vec<u8> {
     // Create a minimal but valid ZIP package with proper structure
-    use std::io::Write;
     let mut package = Vec::new();
     
     // Create a simple ZIP with package.json file
@@ -77,7 +76,7 @@ fn create_test_extension_package() -> Vec<u8> {
     package.extend_from_slice(&1u16.to_le_bytes()); // Total number of entries in central directory
     
     let central_dir_size = 46u32 + 12u32; // Central directory size
-    let central_dir_offset = package.len() as u32 - central_dir_size; // Offset of start of central directory
+    let _central_dir_offset = package.len() as u32 - central_dir_size; // Offset of start of central directory
     package.extend_from_slice(&central_dir_size.to_le_bytes()); // Size of central directory
     package.extend_from_slice(&(30u32 + 12u32 + content_len).to_le_bytes()); // Offset of start of central directory
     package.extend_from_slice(&0u16.to_le_bytes()); // ZIP file comment length
@@ -86,38 +85,21 @@ fn create_test_extension_package() -> Vec<u8> {
 }
 
 // Helper function to extract extension ID from response  
-fn extract_extension_id(response: &PostExtensionUploadResponse) -> Option<String> {
+fn extract_extension_id(_response: &PostExtensionUploadResponse) -> Option<String> {
     // This would depend on the actual response structure
     // For now, return None to skip deletion
     None
 }
 
 /// Helper function to log detailed error information
-fn log_detailed_error(operation: &str, error: &ClientError) {
+fn log_detailed_error(operation: &str, error: &ApiError) {
     match error {
-        ClientError::ApiError(api_error) => {
-            match api_error {
-                ApiError::Http { status, message } => {
-                    println!("  │   ⚠ {} → API Error ({}): {}", operation, status, message);
-                    println!("  │     Status Code: {}", status);
-                },
-                ApiError::ConflictError { message, conflict_type } => {
-                    println!("  │   ⚠ {} → Conflict Error: {}", operation, message);
-                    if let Some(conflict_type) = conflict_type {
-                        println!("  │     Conflict Type: {}", conflict_type);
-                    }
-                },
-                _ => {
-                    println!("  │   ⚠ {} → API Error: {}", operation, api_error);
-                }
-            }
-        },
-        ClientError::HttpError(status_code) => {
-            println!("  │   ⚠ {} → HTTP Error: {}", operation, status_code);
-            println!("  │     Status Code: {}", status_code);
+        ApiError::Http { status, message } => {
+            println!("  │   ⚠ {} → API Error ({}): {}", operation, status, message);
+            println!("  │     Status Code: {}", status);
             
             // Provide helpful context for common errors
-            match status_code.as_u16() {
+            match *status {
                 400 => println!("  │     Likely cause: Invalid request data or missing required fields"),
                 401 => println!("  │     Likely cause: Invalid or missing API token"),
                 403 => println!("  │     Likely cause: Insufficient permissions for this operation"),
@@ -129,8 +111,14 @@ fn log_detailed_error(operation: &str, error: &ClientError) {
                 _ => {}
             }
         },
-        ClientError::HttpClientError(req_error) => {
-            println!("  │   ⚠ {} → HTTP Client Error: {}", operation, req_error);
+        ApiError::ConflictError { message, conflict_type } => {
+            println!("  │   ⚠ {} → Conflict Error: {}", operation, message);
+            if let Some(conflict_type) = conflict_type {
+                println!("  │     Conflict Type: {}", conflict_type);
+            }
+        },
+        ApiError::Network(req_error) => {
+            println!("  │   ⚠ {} → Network Error: {}", operation, req_error);
             if let Some(status) = req_error.status() {
                 println!("  │     HTTP Status: {}", status);
             }
@@ -143,27 +131,20 @@ fn log_detailed_error(operation: &str, error: &ClientError) {
             }
             println!("  │     Details: {}", req_error);
         },
-        ClientError::RequestError(req_error) => {
-            println!("  │   ⚠ {} → Request Error: {}", operation, req_error);
-            if let Some(status) = req_error.status() {
-                println!("  │     HTTP Status: {}", status);
-            }
-            println!("  │     Details: {}", req_error);
-        },
-        ClientError::JsonParseError(json_error) => {
+        ApiError::Serialization(json_error) => {
             println!("  │   ⚠ {} → JSON Parse Error: {}", operation, json_error);
             println!("  │     Details: {}", json_error);
             println!("  │     Likely cause: Invalid JSON in request or unexpected response format");
         },
-        ClientError::InvalidHeader => {
+        ApiError::InvalidHeader => {
             println!("  │   ⚠ {} → Invalid Header Error", operation);
             println!("  │     Likely cause: Invalid characters in API token or headers");
         },
-        ClientError::RequestCloneError => {
+        ApiError::RequestClone => {
             println!("  │   ⚠ {} → Request Clone Error", operation);
             println!("  │     Likely cause: Internal retry mechanism failed");
         },
-        ClientError::ConfigError(config_error) => {
+        ApiError::Configuration(config_error) => {
             println!("  │   ⚠ {} → Configuration Error: {}", operation, config_error);
             println!("  │     Likely cause: Invalid API client configuration");
         }
@@ -248,7 +229,7 @@ async fn main() -> Result<()> {
 }
 
 /// Initialize the Foxglove API client
-async fn create_client() -> Result<ApiClient, ClientError> {
+async fn create_client() -> Result<ApiClient, ApiError> {
     // Get API token from environment variable
     let token = env::var("FOXGLOVE_API_TOKEN")
         .expect("FOXGLOVE_API_TOKEN environment variable must be set");
@@ -330,7 +311,7 @@ async fn run_comprehensive_tests(client: &ApiClient, config: &TestConfig) {
 }
 
 /// Comprehensive Sites API testing
-async fn test_sites_comprehensive(client: &ApiClient, config: &TestConfig) -> Result<(), ClientError> {
+async fn test_sites_comprehensive(client: &ApiClient, config: &TestConfig) -> Result<(), ApiError> {
     println!("\n  ┌─ 🏢 Sites API");
     
     // 1. List all sites
@@ -405,7 +386,7 @@ async fn test_sites_comprehensive(client: &ApiClient, config: &TestConfig) -> Re
 }
 
 /// Comprehensive Devices API testing
-async fn test_devices_comprehensive(client: &ApiClient, config: &TestConfig) -> Result<(), ClientError> {
+async fn test_devices_comprehensive(client: &ApiClient, config: &TestConfig) -> Result<(), ApiError> {
     println!("\n  ┌─ 🤖 Devices API");
     
     // List devices
@@ -484,7 +465,7 @@ async fn test_devices_comprehensive(client: &ApiClient, config: &TestConfig) -> 
 }
 
 /// Comprehensive Recordings API testing
-async fn test_recordings_comprehensive(client: &ApiClient, config: &TestConfig) -> Result<(), ClientError> {
+async fn test_recordings_comprehensive(client: &ApiClient, config: &TestConfig) -> Result<(), ApiError> {
     println!("\n  ┌─ 🎥 Recordings API");
     
     // List recordings
@@ -582,7 +563,7 @@ async fn test_recordings_comprehensive(client: &ApiClient, config: &TestConfig) 
 }
 
 /// Comprehensive Events API testing
-async fn test_events_comprehensive(client: &ApiClient, config: &TestConfig) -> Result<(), ClientError> {
+async fn test_events_comprehensive(client: &ApiClient, config: &TestConfig) -> Result<(), ApiError> {
     println!("\n  ┌─ 📅 Events API");
     
     let end_time = Utc::now();
@@ -673,7 +654,7 @@ async fn test_events_comprehensive(client: &ApiClient, config: &TestConfig) -> R
 }
 
 /// Comprehensive Extensions API testing
-async fn test_extensions_comprehensive(client: &ApiClient, config: &TestConfig) -> Result<(), ClientError> {
+async fn test_extensions_comprehensive(client: &ApiClient, config: &TestConfig) -> Result<(), ApiError> {
     println!("\n  ┌─ 🧩 Extensions API");
     
     // List extensions
@@ -723,7 +704,7 @@ async fn test_extensions_comprehensive(client: &ApiClient, config: &TestConfig) 
 }
 
 /// Test remaining APIs with simpler approach
-async fn test_recording_attachments_comprehensive(client: &ApiClient, config: &TestConfig) -> Result<(), ClientError> {
+async fn test_recording_attachments_comprehensive(client: &ApiClient, _config: &TestConfig) -> Result<(), ApiError> {
     println!("\n  ┌─ 📎 Recording Attachments API");
     
     // 1. List attachments
@@ -760,7 +741,7 @@ async fn test_recording_attachments_comprehensive(client: &ApiClient, config: &T
     Ok(())
 }
 
-async fn test_custom_properties_comprehensive(client: &ApiClient, config: &TestConfig) -> Result<(), ClientError> {
+async fn test_custom_properties_comprehensive(client: &ApiClient, config: &TestConfig) -> Result<(), ApiError> {
     println!("\n  ┌─ 🏷️ Custom Properties API");
     
     // 1. List all custom properties
@@ -827,7 +808,7 @@ async fn test_custom_properties_comprehensive(client: &ApiClient, config: &TestC
     Ok(())
 }
 
-async fn test_coverage_comprehensive(client: &ApiClient, config: &TestConfig) -> Result<(), ClientError> {
+async fn test_coverage_comprehensive(client: &ApiClient, _config: &TestConfig) -> Result<(), ApiError> {
     println!("\n  ┌─ 📊 Coverage API");
     
     let end_time = Utc::now();
@@ -846,7 +827,7 @@ async fn test_coverage_comprehensive(client: &ApiClient, config: &TestConfig) ->
     Ok(())
 }
 
-async fn test_stream_data_comprehensive(client: &ApiClient, config: &TestConfig) -> Result<(), ClientError> {
+async fn test_stream_data_comprehensive(client: &ApiClient, config: &TestConfig) -> Result<(), ApiError> {
     println!("\n  ┌─ 🌊 Stream Data API");
     
     // Test download_data method if enabled
@@ -892,7 +873,7 @@ async fn test_stream_data_comprehensive(client: &ApiClient, config: &TestConfig)
     Ok(())
 }
 
-async fn test_topics_comprehensive(client: &ApiClient, config: &TestConfig) -> Result<(), ClientError> {
+async fn test_topics_comprehensive(client: &ApiClient, _config: &TestConfig) -> Result<(), ApiError> {
     println!("\n  ┌─ 📋 Topics API");
     
     // Get available recordings first for proper context
@@ -991,7 +972,7 @@ async fn test_topics_comprehensive(client: &ApiClient, config: &TestConfig) -> R
     Ok(())
 }
 
-async fn test_lake_files_comprehensive(client: &ApiClient, _config: &TestConfig) -> Result<(), ClientError> {
+async fn test_lake_files_comprehensive(client: &ApiClient, _config: &TestConfig) -> Result<(), ApiError> {
     println!("\n  ┌─ 🗄️ Lake Files API");
     
     // Get available sites first to use proper site_id
@@ -1046,7 +1027,7 @@ async fn test_lake_files_comprehensive(client: &ApiClient, _config: &TestConfig)
     Ok(())
 }
 
-async fn test_layouts_comprehensive(client: &ApiClient, config: &TestConfig) -> Result<(), ClientError> {
+async fn test_layouts_comprehensive(client: &ApiClient, _config: &TestConfig) -> Result<(), ApiError> {
     println!("\n  ┌─ 📐 Layouts API");
     
     match client.layouts.list_layouts(None, None, None).await {
@@ -1067,7 +1048,7 @@ async fn test_layouts_comprehensive(client: &ApiClient, config: &TestConfig) -> 
     Ok(())
 }
 
-async fn test_device_tokens_comprehensive(client: &ApiClient, config: &TestConfig) -> Result<(), ClientError> {
+async fn test_device_tokens_comprehensive(client: &ApiClient, config: &TestConfig) -> Result<(), ApiError> {
     println!("\n  ┌─ 🔑 Device Tokens API");
     
     match client.device_tokens.list_device_tokens(None, None).await {
@@ -1125,7 +1106,7 @@ async fn test_device_tokens_comprehensive(client: &ApiClient, config: &TestConfi
     Ok(())
 }
 
-async fn test_site_tokens_comprehensive(client: &ApiClient, config: &TestConfig) -> Result<(), ClientError> {
+async fn test_site_tokens_comprehensive(client: &ApiClient, config: &TestConfig) -> Result<(), ApiError> {
     println!("\n  ┌─ 🎫 Site Tokens API");
     
     match client.site_tokens.list_site_tokens(None, None).await {
@@ -1166,7 +1147,7 @@ async fn test_site_tokens_comprehensive(client: &ApiClient, config: &TestConfig)
     Ok(())
 }
 
-async fn test_site_inbox_notification_tokens_comprehensive(client: &ApiClient, config: &TestConfig) -> Result<(), ClientError> {
+async fn test_site_inbox_notification_tokens_comprehensive(client: &ApiClient, config: &TestConfig) -> Result<(), ApiError> {
     println!("\n  ┌─ 📬 Site Inbox Notification Tokens API");
     
     match client.site_inbox_notification_tokens.list_inbox_notification_tokens(None, None).await {
@@ -1203,7 +1184,7 @@ async fn test_site_inbox_notification_tokens_comprehensive(client: &ApiClient, c
     Ok(())
 }
 
-async fn test_imports_comprehensive(client: &ApiClient, config: &TestConfig) -> Result<(), ClientError> {
+async fn test_imports_comprehensive(client: &ApiClient, config: &TestConfig) -> Result<(), ApiError> {
     println!("\n  ┌─ 📥 Imports API");
     
     // Try imports with corrected signature

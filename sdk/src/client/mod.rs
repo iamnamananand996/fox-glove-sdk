@@ -1,4 +1,4 @@
-use crate::{ClientConfig, ClientError};
+use crate::{ClientConfig, ApiError};
 
 pub mod devices;
 pub mod recordings;
@@ -37,7 +37,7 @@ pub struct ApiClient {
 }
 
 impl ApiClient {
-    pub fn new(config: ClientConfig) -> Result<Self, ClientError> {
+    pub fn new(config: ClientConfig) -> Result<Self, ApiError> {
         Ok(Self {
             config: config.clone(),
             devices: DevicesClient::new(config.clone())?,

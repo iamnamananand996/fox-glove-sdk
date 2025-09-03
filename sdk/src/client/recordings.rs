@@ -1,4 +1,4 @@
-use crate::{ClientConfig, ClientError, HttpClient, RequestOptions};
+use crate::{ClientConfig, ApiError, HttpClient, RequestOptions};
 use reqwest::{Method};
 use crate::{types::*};
 
@@ -7,12 +7,12 @@ pub struct RecordingsClient {
 }
 
 impl RecordingsClient {
-    pub fn new(config: ClientConfig) -> Result<Self, ClientError> {
+    pub fn new(config: ClientConfig) -> Result<Self, ApiError> {
         let http_client = HttpClient::new(config)?;
         Ok(Self { http_client })
     }
 
-    pub async fn list_recordings(&self, start: Option<chrono::DateTime<chrono::Utc>>, end: Option<chrono::DateTime<chrono::Utc>>, path: Option<String>, site_id: Option<String>, edge_site_id: Option<String>, device_id: Option<String>, device_name: Option<String>, topic: Option<String>, import_status: Option<GetRecordingsRequestImportStatus>, limit: Option<f64>, offset: Option<i32>, sort_by: Option<GetRecordingsRequestSortBy>, sort_order: Option<GetRecordingsRequestSortOrder>, options: Option<RequestOptions>) -> Result<Vec<Recording>, ClientError> {
+    pub async fn list_recordings(&self, start: Option<chrono::DateTime<chrono::Utc>>, end: Option<chrono::DateTime<chrono::Utc>>, path: Option<String>, site_id: Option<String>, edge_site_id: Option<String>, device_id: Option<String>, device_name: Option<String>, topic: Option<String>, import_status: Option<GetRecordingsRequestImportStatus>, limit: Option<f64>, offset: Option<i32>, sort_by: Option<GetRecordingsRequestSortBy>, sort_order: Option<GetRecordingsRequestSortOrder>, options: Option<RequestOptions>) -> Result<Vec<Recording>, ApiError> {
         self.http_client.execute_request(
             Method::GET,
             "recordings",
@@ -65,7 +65,7 @@ impl RecordingsClient {
         ).await
     }
 
-    pub async fn get_a_recording(&self, key_or_id: &String, options: Option<RequestOptions>) -> Result<Recording, ClientError> {
+    pub async fn get_a_recording(&self, key_or_id: &String, options: Option<RequestOptions>) -> Result<Recording, ApiError> {
         self.http_client.execute_request(
             Method::GET,
             &format!("recordings/{}", key_or_id),
@@ -75,7 +75,7 @@ impl RecordingsClient {
         ).await
     }
 
-    pub async fn delete_a_recording(&self, key_or_id: &String, options: Option<RequestOptions>) -> Result<DeleteRecordingsKeyOrIdResponse, ClientError> {
+    pub async fn delete_a_recording(&self, key_or_id: &String, options: Option<RequestOptions>) -> Result<DeleteRecordingsKeyOrIdResponse, ApiError> {
         self.http_client.execute_request(
             Method::DELETE,
             &format!("recordings/{}", key_or_id),
@@ -85,7 +85,7 @@ impl RecordingsClient {
         ).await
     }
 
-    pub async fn import_from_edge(&self, key_or_id: &String, options: Option<RequestOptions>) -> Result<PostRecordingsKeyOrIdImportResponse, ClientError> {
+    pub async fn import_from_edge(&self, key_or_id: &String, options: Option<RequestOptions>) -> Result<PostRecordingsKeyOrIdImportResponse, ApiError> {
         self.http_client.execute_request(
             Method::POST,
             &format!("recordings/{}", key_or_id),
@@ -95,7 +95,7 @@ impl RecordingsClient {
         ).await
     }
 
-    pub async fn list_pending_imports(&self, request_id: Option<String>, key: Option<String>, device_id: Option<String>, device_name: Option<String>, error: Option<String>, filename: Option<String>, updated_since: Option<chrono::DateTime<chrono::Utc>>, show_completed: Option<bool>, show_quarantined: Option<bool>, site_id: Option<String>, sort_by: Option<GetDataPendingImportsRequestSortBy>, sort_order: Option<GetDataPendingImportsRequestSortOrder>, limit: Option<f64>, offset: Option<i32>, options: Option<RequestOptions>) -> Result<Vec<PendingImport>, ClientError> {
+    pub async fn list_pending_imports(&self, request_id: Option<String>, key: Option<String>, device_id: Option<String>, device_name: Option<String>, error: Option<String>, filename: Option<String>, updated_since: Option<chrono::DateTime<chrono::Utc>>, show_completed: Option<bool>, show_quarantined: Option<bool>, site_id: Option<String>, sort_by: Option<GetDataPendingImportsRequestSortBy>, sort_order: Option<GetDataPendingImportsRequestSortOrder>, limit: Option<f64>, offset: Option<i32>, options: Option<RequestOptions>) -> Result<Vec<PendingImport>, ApiError> {
         self.http_client.execute_request(
             Method::GET,
             "data/pending-imports",
@@ -151,7 +151,7 @@ impl RecordingsClient {
         ).await
     }
 
-    pub async fn upload_a_recording(&self, request: &serde_json::Value, options: Option<RequestOptions>) -> Result<PostDataUploadResponse, ClientError> {
+    pub async fn upload_a_recording(&self, request: &serde_json::Value, options: Option<RequestOptions>) -> Result<PostDataUploadResponse, ApiError> {
         self.http_client.execute_request(
             Method::POST,
             "data/upload",

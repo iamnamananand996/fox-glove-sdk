@@ -1,4 +1,4 @@
-use crate::{ClientConfig, ClientError, HttpClient, RequestOptions};
+use crate::{ClientConfig, ApiError, HttpClient, RequestOptions};
 use reqwest::{Method};
 use crate::{types::*};
 
@@ -7,12 +7,12 @@ pub struct SitesClient {
 }
 
 impl SitesClient {
-    pub fn new(config: ClientConfig) -> Result<Self, ClientError> {
+    pub fn new(config: ClientConfig) -> Result<Self, ApiError> {
         let http_client = HttpClient::new(config)?;
         Ok(Self { http_client })
     }
 
-    pub async fn list_sites(&self, options: Option<RequestOptions>) -> Result<Vec<Site>, ClientError> {
+    pub async fn list_sites(&self, options: Option<RequestOptions>) -> Result<Vec<Site>, ApiError> {
         self.http_client.execute_request(
             Method::GET,
             "sites",
@@ -22,7 +22,7 @@ impl SitesClient {
         ).await
     }
 
-    pub async fn create_a_site(&self, request: &serde_json::Value, options: Option<RequestOptions>) -> Result<Site, ClientError> {
+    pub async fn create_a_site(&self, request: &serde_json::Value, options: Option<RequestOptions>) -> Result<Site, ApiError> {
         self.http_client.execute_request(
             Method::POST,
             "sites",
@@ -32,7 +32,7 @@ impl SitesClient {
         ).await
     }
 
-    pub async fn get_site_details(&self, id: &String, options: Option<RequestOptions>) -> Result<Site, ClientError> {
+    pub async fn get_site_details(&self, id: &String, options: Option<RequestOptions>) -> Result<Site, ApiError> {
         self.http_client.execute_request(
             Method::GET,
             &format!("sites/{}", id),
@@ -42,7 +42,7 @@ impl SitesClient {
         ).await
     }
 
-    pub async fn delete_a_site(&self, id: &String, options: Option<RequestOptions>) -> Result<DeleteSitesIdResponse, ClientError> {
+    pub async fn delete_a_site(&self, id: &String, options: Option<RequestOptions>) -> Result<DeleteSitesIdResponse, ApiError> {
         self.http_client.execute_request(
             Method::DELETE,
             &format!("sites/{}", id),
@@ -52,7 +52,7 @@ impl SitesClient {
         ).await
     }
 
-    pub async fn update_site_details(&self, id: &String, request: &serde_json::Value, options: Option<RequestOptions>) -> Result<Site, ClientError> {
+    pub async fn update_site_details(&self, id: &String, request: &serde_json::Value, options: Option<RequestOptions>) -> Result<Site, ApiError> {
         self.http_client.execute_request(
             Method::PATCH,
             &format!("sites/{}", id),
