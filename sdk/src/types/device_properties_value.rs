@@ -3,11 +3,11 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 #[serde(untagged)]
 pub enum DevicePropertiesValue {
-        String(String),
+    String(String),
 
-        Double(f64),
+    Double(f64),
 
-        Boolean(bool),
+    Boolean(bool),
 }
 
 impl DevicePropertiesValue {
@@ -23,47 +23,45 @@ impl DevicePropertiesValue {
         matches!(self, Self::Boolean(_))
     }
 
-
     pub fn as_string(&self) -> Option<&String> {
         match self {
-                    Self::String(value) => Some(value),
-                    _ => None,
-                }
+            Self::String(value) => Some(value),
+            _ => None,
+        }
     }
 
     pub fn into_string(self) -> Option<String> {
         match self {
-                    Self::String(value) => Some(value),
-                    _ => None,
-                }
+            Self::String(value) => Some(value),
+            _ => None,
+        }
     }
 
     pub fn as_double(&self) -> Option<&f64> {
         match self {
-                    Self::Double(value) => Some(value),
-                    _ => None,
-                }
+            Self::Double(value) => Some(value),
+            _ => None,
+        }
     }
 
     pub fn into_double(self) -> Option<f64> {
         match self {
-                    Self::Double(value) => Some(value),
-                    _ => None,
-                }
+            Self::Double(value) => Some(value),
+            _ => None,
+        }
     }
 
     pub fn as_boolean(&self) -> Option<&bool> {
         match self {
-                    Self::Boolean(value) => Some(value),
-                    _ => None,
-                }
+            Self::Boolean(value) => Some(value),
+            _ => None,
+        }
     }
 
     pub fn into_boolean(self) -> Option<bool> {
         match self {
-                    Self::Boolean(value) => Some(value),
-                    _ => None,
-                }
+            Self::Boolean(value) => Some(value),
+            _ => None,
+        }
     }
-
 }

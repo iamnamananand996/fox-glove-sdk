@@ -1,6 +1,6 @@
-use crate::{ClientConfig, ApiError, HttpClient, RequestOptions};
-use reqwest::{Method};
-use crate::{types::*};
+use crate::types::*;
+use crate::{ApiError, ClientConfig, HttpClient, QueryBuilder, RequestOptions};
+use reqwest::Method;
 
 pub struct LayoutsClient {
     pub http_client: HttpClient,
@@ -12,24 +12,23 @@ impl LayoutsClient {
         Ok(Self { http_client })
     }
 
-    pub async fn list_layouts(&self, updated_since: Option<chrono::DateTime<chrono::Utc>>, include_data: Option<bool>, options: Option<RequestOptions>) -> Result<Vec<Layout>, ApiError> {
-        self.http_client.execute_request(
-            Method::GET,
-            "layouts",
-            None,
-            {
-            let mut query_params = Vec::new();
-            if let Some(value) = updated_since {
-                query_params.push(("updatedSince".to_string(), value.to_rfc3339()));
-            }
-            if let Some(value) = include_data {
-                query_params.push(("includeData".to_string(), serde_json::to_string(&value).unwrap_or_default()));
-            }
-            Some(query_params)
-        },
-            options,
-        ).await
+    pub async fn list_layouts(
+        &self,
+        updated_since: Option<chrono::DateTime<chrono::Utc>>,
+        include_data: Option<bool>,
+        options: Option<RequestOptions>,
+    ) -> Result<Vec<Layout>, ApiError> {
+        self.http_client
+            .execute_request(
+                Method::GET,
+                "layouts",
+                None,
+                QueryBuilder::new()
+                    .datetime("updatedSince", updated_since)
+                    .bool("includeData", include_data)
+                    .build(),
+                options,
+            )
+            .await
     }
-
 }
-

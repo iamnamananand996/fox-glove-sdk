@@ -1,21 +1,21 @@
-use crate::{ClientConfig, ApiError};
+use crate::{ApiError, ClientConfig};
 
-pub mod devices;
-pub mod recordings;
-pub mod imports;
-pub mod recording_attachments;
 pub mod coverage;
-pub mod stream_data;
-pub mod topics;
-pub mod extensions;
+pub mod custom_properties;
+pub mod device_tokens;
+pub mod devices;
 pub mod events;
+pub mod extensions;
+pub mod imports;
 pub mod lake_files;
 pub mod layouts;
-pub mod custom_properties;
-pub mod sites;
+pub mod recording_attachments;
+pub mod recordings;
 pub mod site_inbox_notification_tokens;
-pub mod device_tokens;
 pub mod site_tokens;
+pub mod sites;
+pub mod stream_data;
+pub mod topics;
 pub struct ApiClient {
     pub config: ClientConfig,
     pub devices: DevicesClient,
@@ -55,25 +55,24 @@ impl ApiClient {
             sites: SitesClient::new(config.clone())?,
             site_inbox_notification_tokens: SiteInboxNotificationTokensClient::new(config.clone())?,
             device_tokens: DeviceTokensClient::new(config.clone())?,
-            site_tokens: SiteTokensClient::new(config.clone())?
+            site_tokens: SiteTokensClient::new(config.clone())?,
         })
     }
-
 }
 
-pub use devices::DevicesClient;
-pub use recordings::RecordingsClient;
-pub use imports::ImportsClient;
-pub use recording_attachments::RecordingAttachmentsClient;
 pub use coverage::CoverageClient;
-pub use stream_data::StreamDataClient;
-pub use topics::TopicsClient;
-pub use extensions::ExtensionsClient;
+pub use custom_properties::CustomPropertiesClient;
+pub use device_tokens::DeviceTokensClient;
+pub use devices::DevicesClient;
 pub use events::EventsClient;
+pub use extensions::ExtensionsClient;
+pub use imports::ImportsClient;
 pub use lake_files::LakeFilesClient;
 pub use layouts::LayoutsClient;
-pub use custom_properties::CustomPropertiesClient;
-pub use sites::SitesClient;
+pub use recording_attachments::RecordingAttachmentsClient;
+pub use recordings::RecordingsClient;
 pub use site_inbox_notification_tokens::SiteInboxNotificationTokensClient;
-pub use device_tokens::DeviceTokensClient;
 pub use site_tokens::SiteTokensClient;
+pub use sites::SitesClient;
+pub use stream_data::StreamDataClient;
+pub use topics::TopicsClient;

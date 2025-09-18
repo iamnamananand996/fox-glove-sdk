@@ -1,5 +1,5 @@
-use crate::device_summary::DeviceSummary;
 use crate::coverage_status::CoverageStatus;
+use crate::device_summary::DeviceSummary;
 use crate::recording_import_status::RecordingImportStatus;
 use chrono::{DateTime, NaiveDate, Utc};
 use serde::{Deserialize, Serialize};
