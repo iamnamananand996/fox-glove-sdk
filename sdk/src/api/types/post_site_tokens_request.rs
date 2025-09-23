@@ -1,4 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, Hash)]
-pub struct DeviceName(pub String);
+pub struct PostSiteTokensRequest {
+    #[serde(rename = "siteId")]
+    pub site_id: String,
+}

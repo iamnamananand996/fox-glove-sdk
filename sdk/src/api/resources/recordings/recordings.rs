@@ -1,4 +1,4 @@
-use crate::api::types::*;
+use crate::api::*;
 use crate::{ApiError, ClientConfig, HttpClient, QueryBuilder, RequestOptions};
 use reqwest::Method;
 
@@ -9,25 +9,13 @@ pub struct RecordingsClient {
 impl RecordingsClient {
     pub fn new(config: ClientConfig) -> Result<Self, ApiError> {
         Ok(Self {
-            http_client: HttpClient::new(config)?,
+            http_client: HttpClient::new(config.clone())?,
         })
     }
 
     pub async fn list_recordings(
         &self,
-        start: Option<chrono::DateTime<chrono::Utc>>,
-        end: Option<chrono::DateTime<chrono::Utc>>,
-        path: Option<String>,
-        site_id: Option<String>,
-        edge_site_id: Option<String>,
-        device_id: Option<String>,
-        device_name: Option<String>,
-        topic: Option<String>,
-        import_status: Option<GetRecordingsRequestImportStatus>,
-        limit: Option<f64>,
-        offset: Option<i32>,
-        sort_by: Option<GetRecordingsRequestSortBy>,
-        sort_order: Option<GetRecordingsRequestSortOrder>,
+        request: &ListRecordingsQueryRequest,
         options: Option<RequestOptions>,
     ) -> Result<Vec<Recording>, ApiError> {
         self.http_client
@@ -36,19 +24,19 @@ impl RecordingsClient {
                 "recordings",
                 None,
                 QueryBuilder::new()
-                    .datetime("start", start)
-                    .datetime("end", end)
-                    .string("path", path)
-                    .string("site.id", site_id)
-                    .string("edgeSite.id", edge_site_id)
-                    .string("deviceId", device_id)
-                    .string("deviceName", device_name)
-                    .string("topic", topic)
-                    .serialize("importStatus", import_status)
-                    .float("limit", limit)
-                    .int("offset", offset)
-                    .serialize("sortBy", sort_by)
-                    .serialize("sortOrder", sort_order)
+                    .datetime("start", request.start.clone())
+                    .datetime("end", request.end.clone())
+                    .string("path", request.path.clone())
+                    .string("site.id", request.site_id.clone())
+                    .string("edgeSite.id", request.edge_site_id.clone())
+                    .string("deviceId", request.device_id.clone())
+                    .string("deviceName", request.device_name.clone())
+                    .string("topic", request.topic.clone())
+                    .serialize("importStatus", request.import_status.clone())
+                    .float("limit", request.limit.clone())
+                    .int("offset", request.offset.clone())
+                    .serialize("sortBy", request.sort_by.clone())
+                    .serialize("sortOrder", request.sort_order.clone())
                     .build(),
                 options,
             )
@@ -105,20 +93,7 @@ impl RecordingsClient {
 
     pub async fn list_pending_imports(
         &self,
-        request_id: Option<String>,
-        key: Option<String>,
-        device_id: Option<String>,
-        device_name: Option<String>,
-        error: Option<String>,
-        filename: Option<String>,
-        updated_since: Option<chrono::DateTime<chrono::Utc>>,
-        show_completed: Option<bool>,
-        show_quarantined: Option<bool>,
-        site_id: Option<String>,
-        sort_by: Option<GetDataPendingImportsRequestSortBy>,
-        sort_order: Option<GetDataPendingImportsRequestSortOrder>,
-        limit: Option<f64>,
-        offset: Option<i32>,
+        request: &ListPendingImportsQueryRequest,
         options: Option<RequestOptions>,
     ) -> Result<Vec<PendingImport>, ApiError> {
         self.http_client
@@ -127,20 +102,20 @@ impl RecordingsClient {
                 "data/pending-imports",
                 None,
                 QueryBuilder::new()
-                    .string("requestId", request_id)
-                    .string("key", key)
-                    .string("deviceId", device_id)
-                    .string("deviceName", device_name)
-                    .string("error", error)
-                    .string("filename", filename)
-                    .datetime("updatedSince", updated_since)
-                    .bool("showCompleted", show_completed)
-                    .bool("showQuarantined", show_quarantined)
-                    .string("siteId", site_id)
-                    .serialize("sortBy", sort_by)
-                    .serialize("sortOrder", sort_order)
-                    .float("limit", limit)
-                    .int("offset", offset)
+                    .string("requestId", request.request_id.clone())
+                    .string("key", request.key.clone())
+                    .string("deviceId", request.device_id.clone())
+                    .string("deviceName", request.device_name.clone())
+                    .string("error", request.error.clone())
+                    .string("filename", request.filename.clone())
+                    .datetime("updatedSince", request.updated_since.clone())
+                    .bool("showCompleted", request.show_completed.clone())
+                    .bool("showQuarantined", request.show_quarantined.clone())
+                    .string("siteId", request.site_id.clone())
+                    .serialize("sortBy", request.sort_by.clone())
+                    .serialize("sortOrder", request.sort_order.clone())
+                    .float("limit", request.limit.clone())
+                    .int("offset", request.offset.clone())
                     .build(),
                 options,
             )
@@ -149,7 +124,7 @@ impl RecordingsClient {
 
     pub async fn upload_a_recording(
         &self,
-        request: &serde_json::Value,
+        request: &PostDataUploadRequest,
         options: Option<RequestOptions>,
     ) -> Result<PostDataUploadResponse, ApiError> {
         self.http_client

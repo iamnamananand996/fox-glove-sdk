@@ -1,4 +1,4 @@
-use crate::api::types::*;
+use crate::api::*;
 use crate::{ApiError, ClientConfig, HttpClient, QueryBuilder, RequestOptions};
 use reqwest::Method;
 
@@ -9,21 +9,13 @@ pub struct CoverageClient {
 impl CoverageClient {
     pub fn new(config: ClientConfig) -> Result<Self, ApiError> {
         Ok(Self {
-            http_client: HttpClient::new(config)?,
+            http_client: HttpClient::new(config.clone())?,
         })
     }
 
     pub async fn list_coverage(
         &self,
-        start: Option<chrono::DateTime<chrono::Utc>>,
-        end: Option<chrono::DateTime<chrono::Utc>>,
-        tolerance: Option<f64>,
-        device_id: Option<String>,
-        device_name: Option<String>,
-        include_edge_recordings: Option<bool>,
-        import_id: Option<String>,
-        recording_id: Option<String>,
-        recording_key: Option<String>,
+        request: &ListCoverageQueryRequest,
         options: Option<RequestOptions>,
     ) -> Result<Vec<Coverage>, ApiError> {
         self.http_client
@@ -32,15 +24,18 @@ impl CoverageClient {
                 "data/coverage",
                 None,
                 QueryBuilder::new()
-                    .datetime("start", start)
-                    .datetime("end", end)
-                    .float("tolerance", tolerance)
-                    .string("deviceId", device_id)
-                    .string("deviceName", device_name)
-                    .bool("includeEdgeRecordings", include_edge_recordings)
-                    .string("importId", import_id)
-                    .string("recordingId", recording_id)
-                    .string("recordingKey", recording_key)
+                    .datetime("start", request.start.clone())
+                    .datetime("end", request.end.clone())
+                    .float("tolerance", request.tolerance.clone())
+                    .string("deviceId", request.device_id.clone())
+                    .string("deviceName", request.device_name.clone())
+                    .bool(
+                        "includeEdgeRecordings",
+                        request.include_edge_recordings.clone(),
+                    )
+                    .string("importId", request.import_id.clone())
+                    .string("recordingId", request.recording_id.clone())
+                    .string("recordingKey", request.recording_key.clone())
                     .build(),
                 options,
             )

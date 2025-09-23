@@ -1,4 +1,4 @@
-use crate::api::types::*;
+use crate::api::*;
 use crate::{ApiError, ClientConfig, HttpClient, QueryBuilder, RequestOptions};
 use reqwest::Method;
 
@@ -9,13 +9,13 @@ pub struct SiteInboxNotificationTokensClient {
 impl SiteInboxNotificationTokensClient {
     pub fn new(config: ClientConfig) -> Result<Self, ApiError> {
         Ok(Self {
-            http_client: HttpClient::new(config)?,
+            http_client: HttpClient::new(config.clone())?,
         })
     }
 
     pub async fn list_inbox_notification_tokens(
         &self,
-        site_id: Option<String>,
+        request: &ListInboxNotificationTokensQueryRequest,
         options: Option<RequestOptions>,
     ) -> Result<Vec<InboxNotificationToken>, ApiError> {
         self.http_client
@@ -23,7 +23,9 @@ impl SiteInboxNotificationTokensClient {
                 Method::GET,
                 "site-inbox-notification-tokens",
                 None,
-                QueryBuilder::new().string("siteId", site_id).build(),
+                QueryBuilder::new()
+                    .string("siteId", request.site_id.clone())
+                    .build(),
                 options,
             )
             .await
@@ -31,7 +33,7 @@ impl SiteInboxNotificationTokensClient {
 
     pub async fn create_a_site_inbox_notification_token(
         &self,
-        request: &serde_json::Value,
+        request: &PostSiteInboxNotificationTokensRequest,
         options: Option<RequestOptions>,
     ) -> Result<PostSiteInboxNotificationTokensResponse, ApiError> {
         self.http_client

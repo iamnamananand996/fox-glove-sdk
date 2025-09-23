@@ -1,4 +1,6 @@
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, Hash)]
-pub struct DeviceName(pub String);
+pub struct PatchDeviceTokensIdRequest {
+    pub enabled: bool,
+}

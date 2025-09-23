@@ -1,4 +1,4 @@
-use crate::api::types::*;
+use crate::api::*;
 use crate::{ApiError, ClientConfig, HttpClient, QueryBuilder, RequestOptions};
 use reqwest::Method;
 
@@ -9,23 +9,13 @@ pub struct EventsClient {
 impl EventsClient {
     pub fn new(config: ClientConfig) -> Result<Self, ApiError> {
         Ok(Self {
-            http_client: HttpClient::new(config)?,
+            http_client: HttpClient::new(config.clone())?,
         })
     }
 
     pub async fn list_events(
         &self,
-        start: Option<chrono::DateTime<chrono::Utc>>,
-        end: Option<chrono::DateTime<chrono::Utc>>,
-        created_after: Option<chrono::DateTime<chrono::Utc>>,
-        updated_after: Option<chrono::DateTime<chrono::Utc>>,
-        device_id: Option<String>,
-        device_name: Option<String>,
-        query: Option<String>,
-        sort_by: Option<GetEventsRequestSortBy>,
-        sort_order: Option<GetEventsRequestSortOrder>,
-        limit: Option<f64>,
-        offset: Option<i32>,
+        request: &ListEventsQueryRequest,
         options: Option<RequestOptions>,
     ) -> Result<Vec<Event>, ApiError> {
         self.http_client
@@ -34,17 +24,17 @@ impl EventsClient {
                 "events",
                 None,
                 QueryBuilder::new()
-                    .datetime("start", start)
-                    .datetime("end", end)
-                    .datetime("createdAfter", created_after)
-                    .datetime("updatedAfter", updated_after)
-                    .string("deviceId", device_id)
-                    .string("deviceName", device_name)
-                    .structured_query("query", query)
-                    .serialize("sortBy", sort_by)
-                    .serialize("sortOrder", sort_order)
-                    .float("limit", limit)
-                    .int("offset", offset)
+                    .datetime("start", request.start.clone())
+                    .datetime("end", request.end.clone())
+                    .datetime("createdAfter", request.created_after.clone())
+                    .datetime("updatedAfter", request.updated_after.clone())
+                    .string("deviceId", request.device_id.clone())
+                    .string("deviceName", request.device_name.clone())
+                    .structured_query("query", request.query.clone())
+                    .serialize("sortBy", request.sort_by.clone())
+                    .serialize("sortOrder", request.sort_order.clone())
+                    .float("limit", request.limit.clone())
+                    .int("offset", request.offset.clone())
                     .build(),
                 options,
             )
@@ -53,7 +43,7 @@ impl EventsClient {
 
     pub async fn create_an_event(
         &self,
-        request: &serde_json::Value,
+        request: &PostEventsRequest,
         options: Option<RequestOptions>,
     ) -> Result<Event, ApiError> {
         self.http_client
@@ -96,7 +86,7 @@ impl EventsClient {
     pub async fn update_an_event(
         &self,
         id: &String,
-        request: &serde_json::Value,
+        request: &PatchEventsIdRequest,
         options: Option<RequestOptions>,
     ) -> Result<Event, ApiError> {
         self.http_client

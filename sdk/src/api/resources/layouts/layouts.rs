@@ -1,4 +1,4 @@
-use crate::api::types::*;
+use crate::api::*;
 use crate::{ApiError, ClientConfig, HttpClient, QueryBuilder, RequestOptions};
 use reqwest::Method;
 
@@ -9,14 +9,13 @@ pub struct LayoutsClient {
 impl LayoutsClient {
     pub fn new(config: ClientConfig) -> Result<Self, ApiError> {
         Ok(Self {
-            http_client: HttpClient::new(config)?,
+            http_client: HttpClient::new(config.clone())?,
         })
     }
 
     pub async fn list_layouts(
         &self,
-        updated_since: Option<chrono::DateTime<chrono::Utc>>,
-        include_data: Option<bool>,
+        request: &ListLayoutsQueryRequest,
         options: Option<RequestOptions>,
     ) -> Result<Vec<Layout>, ApiError> {
         self.http_client
@@ -25,8 +24,8 @@ impl LayoutsClient {
                 "layouts",
                 None,
                 QueryBuilder::new()
-                    .datetime("updatedSince", updated_since)
-                    .bool("includeData", include_data)
+                    .datetime("updatedSince", request.updated_since.clone())
+                    .bool("includeData", request.include_data.clone())
                     .build(),
                 options,
             )

@@ -1,4 +1,4 @@
-use crate::api::types::*;
+use crate::api::*;
 use crate::{ApiError, ClientConfig, HttpClient, QueryBuilder, RequestOptions};
 use reqwest::Method;
 
@@ -9,7 +9,7 @@ pub struct SitesClient {
 impl SitesClient {
     pub fn new(config: ClientConfig) -> Result<Self, ApiError> {
         Ok(Self {
-            http_client: HttpClient::new(config)?,
+            http_client: HttpClient::new(config.clone())?,
         })
     }
 
@@ -21,7 +21,7 @@ impl SitesClient {
 
     pub async fn create_a_site(
         &self,
-        request: &serde_json::Value,
+        request: &PostSitesRequest,
         options: Option<RequestOptions>,
     ) -> Result<Site, ApiError> {
         self.http_client
@@ -64,7 +64,7 @@ impl SitesClient {
     pub async fn update_site_details(
         &self,
         id: &String,
-        request: &serde_json::Value,
+        request: &PatchSitesIdRequest,
         options: Option<RequestOptions>,
     ) -> Result<Site, ApiError> {
         self.http_client

@@ -1,4 +1,4 @@
-use crate::api::types::*;
+use crate::api::*;
 use crate::{ApiError, ClientConfig, HttpClient, QueryBuilder, RequestOptions};
 use reqwest::Method;
 
@@ -9,13 +9,13 @@ pub struct CustomPropertiesClient {
 impl CustomPropertiesClient {
     pub fn new(config: ClientConfig) -> Result<Self, ApiError> {
         Ok(Self {
-            http_client: HttpClient::new(config)?,
+            http_client: HttpClient::new(config.clone())?,
         })
     }
 
     pub async fn list_custom_properties(
         &self,
-        resource_type: Option<String>,
+        request: &ListCustomPropertiesQueryRequest,
         options: Option<RequestOptions>,
     ) -> Result<Vec<CustomProperty>, ApiError> {
         self.http_client
@@ -24,7 +24,7 @@ impl CustomPropertiesClient {
                 "custom-properties",
                 None,
                 QueryBuilder::new()
-                    .serialize("resourceType", resource_type)
+                    .serialize("resourceType", request.resource_type.clone())
                     .build(),
                 options,
             )
@@ -82,7 +82,7 @@ impl CustomPropertiesClient {
     pub async fn edit_a_custom_property(
         &self,
         id: &String,
-        request: &serde_json::Value,
+        request: &PatchCustomPropertiesIdRequest,
         options: Option<RequestOptions>,
     ) -> Result<CustomProperty, ApiError> {
         self.http_client

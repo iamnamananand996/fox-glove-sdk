@@ -1,4 +1,4 @@
-use crate::api::types::*;
+use crate::api::*;
 use crate::{ApiError, ClientConfig, HttpClient, QueryBuilder, RequestOptions};
 use reqwest::Method;
 
@@ -9,20 +9,13 @@ pub struct RecordingAttachmentsClient {
 impl RecordingAttachmentsClient {
     pub fn new(config: ClientConfig) -> Result<Self, ApiError> {
         Ok(Self {
-            http_client: HttpClient::new(config)?,
+            http_client: HttpClient::new(config.clone())?,
         })
     }
 
     pub async fn list_attachments(
         &self,
-        recording_id: Option<String>,
-        site_id: Option<String>,
-        device_id: Option<String>,
-        device_name: Option<String>,
-        sort_by: Option<String>,
-        sort_order: Option<GetRecordingAttachmentsRequestSortOrder>,
-        limit: Option<f64>,
-        offset: Option<i32>,
+        request: &ListAttachmentsQueryRequest,
         options: Option<RequestOptions>,
     ) -> Result<Vec<RecordingAttachment>, ApiError> {
         self.http_client
@@ -31,14 +24,14 @@ impl RecordingAttachmentsClient {
                 "recording-attachments",
                 None,
                 QueryBuilder::new()
-                    .string("recordingId", recording_id)
-                    .string("siteId", site_id)
-                    .string("deviceId", device_id)
-                    .string("deviceName", device_name)
-                    .serialize("sortBy", sort_by)
-                    .serialize("sortOrder", sort_order)
-                    .float("limit", limit)
-                    .int("offset", offset)
+                    .string("recordingId", request.recording_id.clone())
+                    .string("siteId", request.site_id.clone())
+                    .string("deviceId", request.device_id.clone())
+                    .string("deviceName", request.device_name.clone())
+                    .serialize("sortBy", request.sort_by.clone())
+                    .serialize("sortOrder", request.sort_order.clone())
+                    .float("limit", request.limit.clone())
+                    .int("offset", request.offset.clone())
                     .build(),
                 options,
             )

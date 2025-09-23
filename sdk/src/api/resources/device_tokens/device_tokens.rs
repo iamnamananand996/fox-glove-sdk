@@ -1,4 +1,4 @@
-use crate::api::types::*;
+use crate::api::*;
 use crate::{ApiError, ClientConfig, HttpClient, QueryBuilder, RequestOptions};
 use reqwest::Method;
 
@@ -9,13 +9,13 @@ pub struct DeviceTokensClient {
 impl DeviceTokensClient {
     pub fn new(config: ClientConfig) -> Result<Self, ApiError> {
         Ok(Self {
-            http_client: HttpClient::new(config)?,
+            http_client: HttpClient::new(config.clone())?,
         })
     }
 
     pub async fn list_device_tokens(
         &self,
-        device_id: Option<String>,
+        request: &ListDeviceTokensQueryRequest,
         options: Option<RequestOptions>,
     ) -> Result<Vec<DeviceToken>, ApiError> {
         self.http_client
@@ -23,7 +23,9 @@ impl DeviceTokensClient {
                 Method::GET,
                 "device-tokens",
                 None,
-                QueryBuilder::new().string("deviceId", device_id).build(),
+                QueryBuilder::new()
+                    .string("deviceId", request.device_id.clone())
+                    .build(),
                 options,
             )
             .await
@@ -31,7 +33,7 @@ impl DeviceTokensClient {
 
     pub async fn create_a_device_token(
         &self,
-        request: &serde_json::Value,
+        request: &PostDeviceTokensRequest,
         options: Option<RequestOptions>,
     ) -> Result<PostDeviceTokensResponse, ApiError> {
         self.http_client
@@ -80,7 +82,7 @@ impl DeviceTokensClient {
     pub async fn edit_a_device_token(
         &self,
         id: &String,
-        request: &serde_json::Value,
+        request: &PatchDeviceTokensIdRequest,
         options: Option<RequestOptions>,
     ) -> Result<DeviceToken, ApiError> {
         self.http_client

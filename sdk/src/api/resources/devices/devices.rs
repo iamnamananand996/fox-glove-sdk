@@ -1,4 +1,4 @@
-use crate::api::types::*;
+use crate::api::*;
 use crate::{ApiError, ClientConfig, HttpClient, QueryBuilder, RequestOptions};
 use reqwest::Method;
 
@@ -9,17 +9,13 @@ pub struct DevicesClient {
 impl DevicesClient {
     pub fn new(config: ClientConfig) -> Result<Self, ApiError> {
         Ok(Self {
-            http_client: HttpClient::new(config)?,
+            http_client: HttpClient::new(config.clone())?,
         })
     }
 
     pub async fn list_devices(
         &self,
-        sort_by: Option<String>,
-        query: Option<String>,
-        sort_order: Option<GetDevicesRequestSortOrder>,
-        limit: Option<f64>,
-        offset: Option<i32>,
+        request: &ListDevicesQueryRequest,
         options: Option<RequestOptions>,
     ) -> Result<Vec<Device>, ApiError> {
         self.http_client
@@ -28,11 +24,11 @@ impl DevicesClient {
                 "devices",
                 None,
                 QueryBuilder::new()
-                    .string("sortBy", sort_by)
-                    .structured_query("query", query)
-                    .serialize("sortOrder", sort_order)
-                    .float("limit", limit)
-                    .int("offset", offset)
+                    .string("sortBy", request.sort_by.clone())
+                    .structured_query("query", request.query.clone())
+                    .serialize("sortOrder", request.sort_order.clone())
+                    .float("limit", request.limit.clone())
+                    .int("offset", request.offset.clone())
                     .build(),
                 options,
             )
@@ -41,7 +37,7 @@ impl DevicesClient {
 
     pub async fn create_a_device(
         &self,
-        request: &serde_json::Value,
+        request: &PostDevicesRequest,
         options: Option<RequestOptions>,
     ) -> Result<Device, ApiError> {
         self.http_client
@@ -90,7 +86,7 @@ impl DevicesClient {
     pub async fn update_a_device(
         &self,
         name_or_id: &String,
-        request: &serde_json::Value,
+        request: &PatchDevicesNameOrIdRequest,
         options: Option<RequestOptions>,
     ) -> Result<Device, ApiError> {
         self.http_client

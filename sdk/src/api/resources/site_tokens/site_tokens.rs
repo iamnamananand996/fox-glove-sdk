@@ -1,4 +1,4 @@
-use crate::api::types::*;
+use crate::api::*;
 use crate::{ApiError, ClientConfig, HttpClient, QueryBuilder, RequestOptions};
 use reqwest::Method;
 
@@ -9,13 +9,13 @@ pub struct SiteTokensClient {
 impl SiteTokensClient {
     pub fn new(config: ClientConfig) -> Result<Self, ApiError> {
         Ok(Self {
-            http_client: HttpClient::new(config)?,
+            http_client: HttpClient::new(config.clone())?,
         })
     }
 
     pub async fn list_site_tokens(
         &self,
-        site_id: Option<String>,
+        request: &ListSiteTokensQueryRequest,
         options: Option<RequestOptions>,
     ) -> Result<Vec<SiteToken>, ApiError> {
         self.http_client
@@ -23,7 +23,9 @@ impl SiteTokensClient {
                 Method::GET,
                 "site-tokens",
                 None,
-                QueryBuilder::new().string("siteId", site_id).build(),
+                QueryBuilder::new()
+                    .string("siteId", request.site_id.clone())
+                    .build(),
                 options,
             )
             .await
@@ -31,7 +33,7 @@ impl SiteTokensClient {
 
     pub async fn create_a_site_token(
         &self,
-        request: &serde_json::Value,
+        request: &PostSiteTokensRequest,
         options: Option<RequestOptions>,
     ) -> Result<PostSiteTokensResponse, ApiError> {
         self.http_client

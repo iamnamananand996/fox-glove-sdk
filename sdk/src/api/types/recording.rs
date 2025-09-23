@@ -5,7 +5,7 @@ use crate::site_summary::SiteSummary;
 use chrono::{DateTime, NaiveDate, Utc};
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Recording {
     pub id: String,
     pub path: String,
