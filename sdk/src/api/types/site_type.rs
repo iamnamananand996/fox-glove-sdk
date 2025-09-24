@@ -1,6 +1,10 @@
 use serde::{Deserialize, Serialize};
 use std::fmt;
 
+/// The type of the site.
+/// - `foxglove-hosted`: A [Foxglove-hosted Primary Site](https://docs.foxglove.dev/docs/primary-sites/introduction/#foxglove-hosted).
+/// - `self-hosted`: A [self-hosted Primary Site](https://docs.foxglove.dev/docs/primary-sites/introduction/#self-hosted).
+/// - `edge`: An [Edge Site](https://docs.foxglove.dev/docs/edge-sites/introduction/).
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, Hash)]
 pub enum SiteType {
     #[serde(rename = "foxglove-hosted")]

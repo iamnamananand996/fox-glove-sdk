@@ -1,6 +1,7 @@
 use serde::{Deserialize, Serialize};
 use std::fmt;
 
+/// The result of the deletion attempt.
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, Hash)]
 pub enum DeleteDataImportsResponseDeletionResultsItemResult {
     #[serde(rename = "success")]

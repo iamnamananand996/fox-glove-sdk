@@ -1,12 +1,12 @@
-use chrono::{DateTime, NaiveDate, Utc};
+use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct ListCoverageQueryRequest {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub start: Option<chrono::DateTime<chrono::Utc>>,
+    pub start: Option<DateTime<Utc>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub end: Option<chrono::DateTime<chrono::Utc>>,
+    pub end: Option<DateTime<Utc>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tolerance: Option<f64>,
     #[serde(rename = "deviceId")]

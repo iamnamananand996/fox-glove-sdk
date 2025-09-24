@@ -1,4 +1,4 @@
-use chrono::{DateTime, NaiveDate, Utc};
+use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, Hash)]
@@ -18,9 +18,9 @@ pub struct ListLakeFilesQueryRequest {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub recording_key: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub start: Option<chrono::DateTime<chrono::Utc>>,
+    pub start: Option<DateTime<Utc>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub end: Option<chrono::DateTime<chrono::Utc>>,
+    pub end: Option<DateTime<Utc>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub topic: Option<String>,
 }

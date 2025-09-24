@@ -31,6 +31,25 @@ impl SiteInboxNotificationTokensClient {
             .await
     }
 
+    /// This endpoint returns a `token` which can be used to authenticate push notifications
+    /// from your inbox bucket to the Foxglove API. This token should be used as a query argument
+    /// to the `/endpoints/inbox-notifications` route of this domain, eg.
+    ///
+    /// ```
+    /// https://api.foxglove.dev/endpoints/inbox-notifications?token=<token>
+    /// ```
+    ///
+    /// See the [Primary Site
+    /// Installation](https://docs.foxglove.dev/docs/primary-sites/self-hosting/installation#bucket-push-notification)
+    /// documentation for more details.
+    ///
+    /// # Arguments
+    ///
+    /// * `options` - Additional request options such as headers, timeout, etc.
+    ///
+    /// # Returns
+    ///
+    /// JSON response from the API
     pub async fn create_a_site_inbox_notification_token(
         &self,
         request: &PostSiteInboxNotificationTokensRequest,

@@ -1,6 +1,10 @@
 use serde::{Deserialize, Serialize};
 use std::fmt;
 
+/// Output file format.
+/// * `bag1` - output a .bag file
+/// * `mcap` - output a .mcap file
+/// * `mcap0` - Deprecated. Use `mcap`.
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, Hash)]
 pub enum PostDataStreamRequestOutputFormat {
     #[serde(rename = "bag1")]

@@ -54,6 +54,19 @@ impl RecordingAttachmentsClient {
             .await
     }
 
+    /// To download an attachment make a request to this endpoint and follow the 302 redirect. The
+    /// attachment will download directly from the Primary Site.
+    ///
+    /// Note: The redirect link expires after 15 minutes.
+    ///
+    /// # Arguments
+    ///
+    /// * `id` - ID of the attachment to download
+    /// * `options` - Additional request options such as headers, timeout, etc.
+    ///
+    /// # Returns
+    ///
+    /// Empty response
     pub async fn download_an_attachment(
         &self,
         id: &String,

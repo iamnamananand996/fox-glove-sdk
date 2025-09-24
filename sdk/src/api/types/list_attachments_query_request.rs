@@ -1,7 +1,7 @@
 use crate::recording_attachments_get_recording_attachments_request_sort_order::GetRecordingAttachmentsRequestSortOrder;
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct ListAttachmentsQueryRequest {
     #[serde(rename = "recordingId")]
     #[serde(skip_serializing_if = "Option::is_none")]

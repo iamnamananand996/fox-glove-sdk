@@ -1,6 +1,10 @@
 use serde::{Deserialize, Serialize};
 use std::fmt;
 
+/// Output compression format for chunks. Only valid if `outputFormat` is `mcap`.
+/// * `""` - no compression
+/// * `zstd` - zstd compression
+/// * `lz4` - LZ4 compression (default)
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, Hash)]
 pub enum PostDataStreamRequestCompressionFormat {
     #[serde(rename = "")]

@@ -5,5 +5,6 @@ use serde::{Deserialize, Serialize};
 pub struct CustomProperty {
     #[serde(flatten)]
     pub new_custom_property_fields: NewCustomProperty,
+    /// ID of the custom property
     pub id: String,
 }

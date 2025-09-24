@@ -5,6 +5,7 @@ use serde::{Deserialize, Serialize};
 pub struct PostSiteTokensResponse {
     #[serde(flatten)]
     pub site_token_fields: SiteToken,
+    /// Generated token. This is only available on creation.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub token: Option<String>,
 }

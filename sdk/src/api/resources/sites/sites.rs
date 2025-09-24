@@ -1,5 +1,5 @@
 use crate::api::*;
-use crate::{ApiError, ClientConfig, HttpClient, QueryBuilder, RequestOptions};
+use crate::{ApiError, ClientConfig, HttpClient, RequestOptions};
 use reqwest::Method;
 
 pub struct SitesClient {
@@ -13,12 +13,30 @@ impl SitesClient {
         })
     }
 
+    /// Retrieve a list of sites.
+    ///
+    /// # Arguments
+    ///
+    /// * `options` - Additional request options such as headers, timeout, etc.
+    ///
+    /// # Returns
+    ///
+    /// JSON response from the API
     pub async fn list_sites(&self, options: Option<RequestOptions>) -> Result<Vec<Site>, ApiError> {
         self.http_client
             .execute_request(Method::GET, "sites", None, None, options)
             .await
     }
 
+    /// Create a new site.
+    ///
+    /// # Arguments
+    ///
+    /// * `options` - Additional request options such as headers, timeout, etc.
+    ///
+    /// # Returns
+    ///
+    /// JSON response from the API
     pub async fn create_a_site(
         &self,
         request: &PostSitesRequest,
@@ -35,6 +53,16 @@ impl SitesClient {
             .await
     }
 
+    /// Get details for a specific site.
+    ///
+    /// # Arguments
+    ///
+    /// * `id` - Site ID
+    /// * `options` - Additional request options such as headers, timeout, etc.
+    ///
+    /// # Returns
+    ///
+    /// JSON response from the API
     pub async fn get_site_details(
         &self,
         id: &String,
@@ -45,6 +73,27 @@ impl SitesClient {
             .await
     }
 
+    /// Delete a site.
+    ///
+    /// _NOTE: Site deletion is permanent and cannot be undone. Any recordings stored at this site
+    /// will no longer be available through Foxglove._
+    ///
+    /// For `edge` and `self-hosted` sites, you should shut down your deployment before deleting
+    /// the site through the API.
+    ///
+    /// If the site type is `self-hosted`, the contents of your inbox and lake buckets will not be
+    /// affected by this action, and should be cleaned up separately after deleting the site.
+    ///
+    /// If the site type is `edge`, any files in edge storage will not be affected by this action.
+    ///
+    /// # Arguments
+    ///
+    /// * `id` - Site ID
+    /// * `options` - Additional request options such as headers, timeout, etc.
+    ///
+    /// # Returns
+    ///
+    /// JSON response from the API
     pub async fn delete_a_site(
         &self,
         id: &String,
@@ -61,6 +110,16 @@ impl SitesClient {
             .await
     }
 
+    /// Update the name or retention period for a Site.
+    ///
+    /// # Arguments
+    ///
+    /// * `id` - Site ID
+    /// * `options` - Additional request options such as headers, timeout, etc.
+    ///
+    /// # Returns
+    ///
+    /// JSON response from the API
     pub async fn update_site_details(
         &self,
         id: &String,

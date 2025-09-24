@@ -1,10 +1,10 @@
 use crate::stream_data_post_data_stream_request_compression_format::PostDataStreamRequestCompressionFormat;
 use crate::stream_data_post_data_stream_request_output_format::PostDataStreamRequestOutputFormat;
 use crate::stream_data_post_data_stream_request_replay_policy::PostDataStreamRequestReplayPolicy;
-use chrono::{DateTime, NaiveDate, Utc};
+use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct PostDataStreamRequest {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub topics: Option<Vec<String>>,
@@ -33,9 +33,9 @@ pub struct PostDataStreamRequest {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub device_name: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub start: Option<chrono::DateTime<chrono::Utc>>,
+    pub start: Option<DateTime<Utc>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub end: Option<chrono::DateTime<chrono::Utc>>,
+    pub end: Option<DateTime<Utc>>,
     #[serde(rename = "importId")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub import_id: Option<String>,

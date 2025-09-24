@@ -1,9 +1,9 @@
 use crate::recordings_get_data_pending_imports_request_sort_by::GetDataPendingImportsRequestSortBy;
 use crate::recordings_get_data_pending_imports_request_sort_order::GetDataPendingImportsRequestSortOrder;
-use chrono::{DateTime, NaiveDate, Utc};
+use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct ListPendingImportsQueryRequest {
     #[serde(rename = "requestId")]
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -22,7 +22,7 @@ pub struct ListPendingImportsQueryRequest {
     pub filename: Option<String>,
     #[serde(rename = "updatedSince")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub updated_since: Option<chrono::DateTime<chrono::Utc>>,
+    pub updated_since: Option<DateTime<Utc>>,
     #[serde(rename = "showCompleted")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub show_completed: Option<bool>,

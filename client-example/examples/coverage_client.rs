@@ -1,5 +1,5 @@
 use chrono::Utc;
-use foxglove_api::{api::ApiClient, ClientConfig, DeviceName, GetDevicesRequestSortOrder, PostDevicesRequest};
+use foxglove_api::{api::ApiClient, ClientConfig, DeviceName, GetDevicesRequestSortOrder, ListDevicesQueryRequest, PostDevicesRequest};
 
 #[tokio::main]
 async fn main() {
@@ -43,14 +43,15 @@ async fn main() {
         GetDevicesRequestSortOrder::Asc
     );
 
+    let data = ListDevicesQueryRequest {
+        limit : Some(5.0),
+        ..Default::default()
+    };
+
     let devices = client
         .devices
         .list_devices(
-            Some("name".to_string()),              // sort_by
-            None, // query - no filter to see all devices for comparison
-            Some(GetDevicesRequestSortOrder::Asc), // sort_order
-            Some(100.0), // limit
-            Some(9), // offset
+            &data, // offset
             None, // request_options
         )
         .await
@@ -64,13 +65,13 @@ async fn main() {
 
 
 
-    let request = PostDevicesRequest { name: DeviceName("Device1".to_string()), properties: None };
+    // let request = PostDevicesRequest { name: DeviceName("Device1".to_string()), properties: None };
 
     
 
 
     
-    let data = client.devices.delete_a_device(&"dev_0dqbHCph2AE69VUr".to_string(), None).await.unwrap();
-    let data = client.devices.create_a_device(&request, None).await.unwrap();
-    println!("{:?}", data)
+    // let data = client.devices.delete_a_device(&"dev_0dqbHCph2AE69VUr".to_string(), None).await.unwrap();
+    // let data = client.devices.create_a_device(&request, None).await.unwrap();
+    // println!("{:?}", data)
 }

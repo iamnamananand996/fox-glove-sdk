@@ -31,6 +31,15 @@ impl DeviceTokensClient {
             .await
     }
 
+    /// You must have an Enterprise or Team account to create and use device tokens
+    ///
+    /// # Arguments
+    ///
+    /// * `options` - Additional request options such as headers, timeout, etc.
+    ///
+    /// # Returns
+    ///
+    /// JSON response from the API
     pub async fn create_a_device_token(
         &self,
         request: &PostDeviceTokensRequest,

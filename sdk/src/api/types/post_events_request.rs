@@ -1,4 +1,4 @@
-use chrono::{DateTime, NaiveDate, Utc};
+use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
@@ -12,6 +12,6 @@ pub struct PostEventsRequest {
     pub device_name: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<HashMap<String, String>>,
-    pub start: chrono::DateTime<chrono::Utc>,
-    pub end: chrono::DateTime<chrono::Utc>,
+    pub start: DateTime<Utc>,
+    pub end: DateTime<Utc>,
 }

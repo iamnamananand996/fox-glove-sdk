@@ -1,14 +1,14 @@
 use crate::topics_get_data_topics_request_sort_by::GetDataTopicsRequestSortBy;
 use crate::topics_get_data_topics_request_sort_order::GetDataTopicsRequestSortOrder;
-use chrono::{DateTime, NaiveDate, Utc};
+use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct ListTopicsQueryRequest {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub start: Option<chrono::DateTime<chrono::Utc>>,
+    pub start: Option<DateTime<Utc>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub end: Option<chrono::DateTime<chrono::Utc>>,
+    pub end: Option<DateTime<Utc>>,
     #[serde(rename = "importId")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub import_id: Option<String>,

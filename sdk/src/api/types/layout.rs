@@ -1,23 +1,32 @@
 use crate::layout_permission::LayoutPermission;
-use chrono::{DateTime, NaiveDate, Utc};
+use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Layout {
+    /// ID of the layout
     pub id: String,
+    /// Name of the layout
     pub name: String,
+    /// Timestamp when the layout was created on the server
     #[serde(rename = "createdAt")]
-    pub created_at: chrono::DateTime<chrono::Utc>,
+    pub created_at: DateTime<Utc>,
+    /// Timestamp when the layout was last updated on the server
     #[serde(rename = "updatedAt")]
-    pub updated_at: chrono::DateTime<chrono::Utc>,
+    pub updated_at: DateTime<Utc>,
+    /// Timestamp when the layout was last saved locally
     #[serde(rename = "savedAt")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub saved_at: Option<chrono::DateTime<chrono::Utc>>,
+    pub saved_at: Option<DateTime<Utc>>,
+    /// Name of the folder the layout belongs to.
     #[serde(rename = "folderName")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub folder_name: Option<String>,
     pub permission: LayoutPermission,
+    /// An object containing the layout data.
+    ///
+    /// Note: The layout data format is not considered stable and may change over time.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub data: Option<HashMap<String, serde_json::Value>>,
 }

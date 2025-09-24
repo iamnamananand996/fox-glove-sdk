@@ -1,7 +1,7 @@
 use crate::devices_get_devices_request_sort_order::GetDevicesRequestSortOrder;
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct ListDevicesQueryRequest {
     #[serde(rename = "sortBy")]
     #[serde(skip_serializing_if = "Option::is_none")]

@@ -1,15 +1,15 @@
 use crate::recordings_get_recordings_request_import_status::GetRecordingsRequestImportStatus;
 use crate::recordings_get_recordings_request_sort_by::GetRecordingsRequestSortBy;
 use crate::recordings_get_recordings_request_sort_order::GetRecordingsRequestSortOrder;
-use chrono::{DateTime, NaiveDate, Utc};
+use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct ListRecordingsQueryRequest {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub start: Option<chrono::DateTime<chrono::Utc>>,
+    pub start: Option<DateTime<Utc>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub end: Option<chrono::DateTime<chrono::Utc>>,
+    pub end: Option<DateTime<Utc>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
     #[serde(rename = "site.id")]
