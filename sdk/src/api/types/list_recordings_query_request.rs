@@ -1,10 +1,6 @@
-use crate::recordings_get_recordings_request_import_status::GetRecordingsRequestImportStatus;
-use crate::recordings_get_recordings_request_sort_by::GetRecordingsRequestSortBy;
-use crate::recordings_get_recordings_request_sort_order::GetRecordingsRequestSortOrder;
-use chrono::{DateTime, Utc};
-use serde::{Deserialize, Serialize};
+pub use crate::prelude::*;
 
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
 pub struct ListRecordingsQueryRequest {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub start: Option<DateTime<Utc>>,
@@ -32,7 +28,7 @@ pub struct ListRecordingsQueryRequest {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub limit: Option<f64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub offset: Option<i32>,
+    pub offset: Option<i64>,
     #[serde(rename = "sortBy")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sort_by: Option<GetRecordingsRequestSortBy>,

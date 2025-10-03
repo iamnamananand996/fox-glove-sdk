@@ -1,7 +1,7 @@
-use serde::{Deserialize, Serialize};
+pub use crate::prelude::*;
 
 /// An attachment resource represents information about an MCAP attachment imported to Foxglove.
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct RecordingAttachment {
     /// ID of the attachment
     pub id: String,
@@ -25,7 +25,7 @@ pub struct RecordingAttachment {
     /// CRC field from the attachment record as a decimal number
     pub crc: f64,
     /// Size of the attachment in bytes
-    pub size: i32,
+    pub size: i64,
     /// A hash of the attachment content (algorithm subject to change). Two attachments
     /// with the same fingerprint will have identical content.
     pub fingerprint: String,

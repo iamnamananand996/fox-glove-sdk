@@ -1,9 +1,6 @@
-use crate::layout_permission::LayoutPermission;
-use chrono::{DateTime, Utc};
-use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
+pub use crate::prelude::*;
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct Layout {
     /// ID of the layout
     pub id: String,

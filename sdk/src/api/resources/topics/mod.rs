@@ -1,2 +1,2 @@
 pub mod topics;
-pub use topics::*;
+pub use topics::TopicsClient;

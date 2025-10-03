@@ -1,9 +1,6 @@
-use crate::device_properties_value::DevicePropertiesValue;
-use chrono::{DateTime, Utc};
-use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
+pub use crate::prelude::*;
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct Device {
     /// Opaque identifier
     pub id: String,

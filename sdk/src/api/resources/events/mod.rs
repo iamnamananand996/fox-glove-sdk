@@ -1,2 +1,2 @@
 pub mod events;
-pub use events::*;
+pub use events::EventsClient;

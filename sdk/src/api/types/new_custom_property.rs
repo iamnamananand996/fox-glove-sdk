@@ -1,5 +1,4 @@
-use crate::new_custom_property_value_type::NewCustomPropertyValueType;
-use serde::{Deserialize, Serialize};
+pub use crate::prelude::*;
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, Hash)]
 pub struct NewCustomProperty {

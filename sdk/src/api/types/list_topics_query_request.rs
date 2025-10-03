@@ -1,9 +1,6 @@
-use crate::topics_get_data_topics_request_sort_by::GetDataTopicsRequestSortBy;
-use crate::topics_get_data_topics_request_sort_order::GetDataTopicsRequestSortOrder;
-use chrono::{DateTime, Utc};
-use serde::{Deserialize, Serialize};
+pub use crate::prelude::*;
 
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
 pub struct ListTopicsQueryRequest {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub start: Option<DateTime<Utc>>,
@@ -36,5 +33,5 @@ pub struct ListTopicsQueryRequest {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub limit: Option<f64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub offset: Option<i32>,
+    pub offset: Option<i64>,
 }

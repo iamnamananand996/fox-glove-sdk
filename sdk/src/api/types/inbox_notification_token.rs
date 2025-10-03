@@ -1,5 +1,4 @@
-use chrono::{DateTime, Utc};
-use serde::{Deserialize, Serialize};
+pub use crate::prelude::*;
 
 /// An inbox notification token identifies a site to the inbox-notifications endpoint.
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, Hash)]

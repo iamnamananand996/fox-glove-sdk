@@ -1,7 +1,6 @@
-use crate::devices_get_devices_request_sort_order::GetDevicesRequestSortOrder;
-use serde::{Deserialize, Serialize};
+pub use crate::prelude::*;
 
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
 pub struct ListDevicesQueryRequest {
     #[serde(rename = "sortBy")]
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -14,5 +13,5 @@ pub struct ListDevicesQueryRequest {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub limit: Option<f64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub offset: Option<i32>,
+    pub offset: Option<i64>,
 }

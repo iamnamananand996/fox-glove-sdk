@@ -1,2 +1,2 @@
 pub mod recordings;
-pub use recordings::*;
+pub use recordings::RecordingsClient;

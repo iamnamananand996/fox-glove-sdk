@@ -1,9 +1,6 @@
-use crate::imports_get_data_imports_request_sort_by::GetDataImportsRequestSortBy;
-use crate::imports_get_data_imports_request_sort_order::GetDataImportsRequestSortOrder;
-use chrono::{DateTime, Utc};
-use serde::{Deserialize, Serialize};
+pub use crate::prelude::*;
 
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
 pub struct ListImportsQueryRequest {
     #[serde(rename = "deviceId")]
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -29,5 +26,5 @@ pub struct ListImportsQueryRequest {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub limit: Option<f64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub offset: Option<i32>,
+    pub offset: Option<i64>,
 }

@@ -1,2 +1,2 @@
 pub mod coverage;
-pub use coverage::*;
+pub use coverage::CoverageClient;

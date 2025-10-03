@@ -1,2 +1,2 @@
 pub mod sites;
-pub use sites::*;
+pub use sites::SitesClient;

@@ -1,5 +1,4 @@
-use chrono::{DateTime, Utc};
-use serde::{Deserialize, Serialize};
+pub use crate::prelude::*;
 
 /// A DeviceToken authenticates device agents to the API.
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, Hash)]

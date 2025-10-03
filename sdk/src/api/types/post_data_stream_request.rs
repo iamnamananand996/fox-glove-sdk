@@ -1,10 +1,6 @@
-use crate::stream_data_post_data_stream_request_compression_format::PostDataStreamRequestCompressionFormat;
-use crate::stream_data_post_data_stream_request_output_format::PostDataStreamRequestOutputFormat;
-use crate::stream_data_post_data_stream_request_replay_policy::PostDataStreamRequestReplayPolicy;
-use chrono::{DateTime, Utc};
-use serde::{Deserialize, Serialize};
+pub use crate::prelude::*;
 
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
 pub struct PostDataStreamRequest {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub topics: Option<Vec<String>>,

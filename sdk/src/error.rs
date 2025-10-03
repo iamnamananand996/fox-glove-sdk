@@ -36,8 +36,7 @@ impl ApiError {
                                 .to_string(),
                             conflict_type: parsed
                                 .get("conflict_type")
-                                .and_then(|v| v.as_str())
-                                .map(|s| s.to_string()),
+                                .and_then(|v| v.as_str().map(|s| s.to_string())),
                         };
                     }
                 }

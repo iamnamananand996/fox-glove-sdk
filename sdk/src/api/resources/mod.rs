@@ -16,7 +16,7 @@ pub mod site_tokens;
 pub mod sites;
 pub mod stream_data;
 pub mod topics;
-pub struct ApiClient {
+pub struct FoxgloveClient {
     pub config: ClientConfig,
     pub devices: DevicesClient,
     pub recordings: RecordingsClient,
@@ -36,7 +36,7 @@ pub struct ApiClient {
     pub site_tokens: SiteTokensClient,
 }
 
-impl ApiClient {
+impl FoxgloveClient {
     pub fn new(config: ClientConfig) -> Result<Self, ApiError> {
         Ok(Self {
             config: config.clone(),
@@ -60,19 +60,19 @@ impl ApiClient {
     }
 }
 
-pub use coverage::*;
-pub use custom_properties::*;
-pub use device_tokens::*;
-pub use devices::*;
-pub use events::*;
-pub use extensions::*;
-pub use imports::*;
-pub use lake_files::*;
-pub use layouts::*;
-pub use recording_attachments::*;
-pub use recordings::*;
-pub use site_inbox_notification_tokens::*;
-pub use site_tokens::*;
-pub use sites::*;
-pub use stream_data::*;
-pub use topics::*;
+pub use coverage::CoverageClient;
+pub use custom_properties::CustomPropertiesClient;
+pub use device_tokens::DeviceTokensClient;
+pub use devices::DevicesClient;
+pub use events::EventsClient;
+pub use extensions::ExtensionsClient;
+pub use imports::ImportsClient;
+pub use lake_files::LakeFilesClient;
+pub use layouts::LayoutsClient;
+pub use recording_attachments::RecordingAttachmentsClient;
+pub use recordings::RecordingsClient;
+pub use site_inbox_notification_tokens::SiteInboxNotificationTokensClient;
+pub use site_tokens::SiteTokensClient;
+pub use sites::SitesClient;
+pub use stream_data::StreamDataClient;
+pub use topics::TopicsClient;

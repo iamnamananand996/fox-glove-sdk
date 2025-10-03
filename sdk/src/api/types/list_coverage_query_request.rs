@@ -1,7 +1,6 @@
-use chrono::{DateTime, Utc};
-use serde::{Deserialize, Serialize};
+pub use crate::prelude::*;
 
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
 pub struct ListCoverageQueryRequest {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub start: Option<DateTime<Utc>>,

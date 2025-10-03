@@ -1,9 +1,6 @@
-use crate::recordings_get_data_pending_imports_request_sort_by::GetDataPendingImportsRequestSortBy;
-use crate::recordings_get_data_pending_imports_request_sort_order::GetDataPendingImportsRequestSortOrder;
-use chrono::{DateTime, Utc};
-use serde::{Deserialize, Serialize};
+pub use crate::prelude::*;
 
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
 pub struct ListPendingImportsQueryRequest {
     #[serde(rename = "requestId")]
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -41,5 +38,5 @@ pub struct ListPendingImportsQueryRequest {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub limit: Option<f64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub offset: Option<i32>,
+    pub offset: Option<i64>,
 }

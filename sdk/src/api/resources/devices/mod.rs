@@ -1,2 +1,2 @@
 pub mod devices;
-pub use devices::*;
+pub use devices::DevicesClient;

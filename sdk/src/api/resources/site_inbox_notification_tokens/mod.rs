@@ -1,2 +1,2 @@
 pub mod site_inbox_notification_tokens;
-pub use site_inbox_notification_tokens::*;
+pub use site_inbox_notification_tokens::SiteInboxNotificationTokensClient;

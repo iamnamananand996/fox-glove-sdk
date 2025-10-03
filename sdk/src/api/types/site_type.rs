@@ -1,5 +1,4 @@
-use serde::{Deserialize, Serialize};
-use std::fmt;
+pub use crate::prelude::*;
 
 /// The type of the site.
 /// - `foxglove-hosted`: A [Foxglove-hosted Primary Site](https://docs.foxglove.dev/docs/primary-sites/introduction/#foxglove-hosted).

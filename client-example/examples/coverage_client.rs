@@ -1,5 +1,5 @@
 use chrono::Utc;
-use foxglove_api::{api::ApiClient, ClientConfig, DeviceName, GetDevicesRequestSortOrder, ListDevicesQueryRequest, PostDevicesRequest};
+use foxglove::{api::FoxgloveClient, ClientConfig, DeviceName, GetDevicesRequestSortOrder, ListDevicesQueryRequest, PostDevicesRequest};
 
 #[tokio::main]
 async fn main() {
@@ -17,7 +17,7 @@ async fn main() {
     //     ..Default::default()
     // };
 
-    let client = ApiClient::new(config).unwrap();
+    let client = FoxgloveClient::new(config).unwrap();
 
     // Example 1: List coverage for last 30 days - using default values
     let end_time = Some(Utc::now());

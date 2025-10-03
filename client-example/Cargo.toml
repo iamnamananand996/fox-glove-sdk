@@ -9,9 +9,9 @@ path = "src/main.rs"
 
 [dependencies]
 # Foxglove Rust SDK (local path)
-foxglove_api = { path = "../sdk" }
+foxglove = { path = "../sdk" }
 # Or if published to crates.io:
-# foxglove_api = "0.1.0"
+# foxglove = "0.0.1"
 
 # Async runtime
 tokio = { version = "1.0", features = ["full"] }

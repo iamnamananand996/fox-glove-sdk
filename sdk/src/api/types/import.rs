@@ -1,7 +1,6 @@
-use chrono::{DateTime, Utc};
-use serde::{Deserialize, Serialize};
+pub use crate::prelude::*;
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct Import {
     /// Opaque ID
     pub id: String,
@@ -34,11 +33,11 @@ pub struct Import {
     /// Size in bytes of the uploaded file
     #[serde(rename = "inputSize")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub input_size: Option<f32>,
+    pub input_size: Option<f64>,
     /// Size in bytes of the data after processing
     #[serde(rename = "totalOutputSize")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub total_output_size: Option<f32>,
+    pub total_output_size: Option<f64>,
     /// Message log time start date in YYYYMMDD format e.g. 20170322
     #[serde(skip_serializing_if = "Option::is_none")]
     pub date: Option<String>,

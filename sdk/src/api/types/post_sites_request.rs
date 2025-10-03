@@ -1,7 +1,6 @@
-use crate::sites_post_sites_request_type::PostSitesRequestType;
-use serde::{Deserialize, Serialize};
+pub use crate::prelude::*;
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct PostSitesRequest {
     pub name: String,
     pub r#type: PostSitesRequestType,

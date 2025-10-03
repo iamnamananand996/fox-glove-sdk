@@ -1,6 +1,6 @@
 [package]
-name = "foxglove_api"
-version = "0.1.0"
+name = "foxglove"
+version = "0.0.1"
 edition = "2021"
 
 [dependencies]

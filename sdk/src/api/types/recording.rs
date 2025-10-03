@@ -1,12 +1,7 @@
-use crate::device_summary::DeviceSummary;
-use crate::recording_import_status::RecordingImportStatus;
-use crate::recording_metadata::RecordingMetadata;
-use crate::site_summary::SiteSummary;
-use chrono::{DateTime, Utc};
-use serde::{Deserialize, Serialize};
+pub use crate::prelude::*;
 
 /// A resource representing the content of an MCAP file or ROS bag managed by Foxglove.
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct Recording {
     /// ID of the recording
     pub id: String,
@@ -16,7 +11,7 @@ pub struct Recording {
     /// the `filename` query arg provided to `/data/upload`.
     pub path: String,
     /// The size of the recording file, in bytes
-    pub size: f32,
+    pub size: f64,
     /// Timestamp when the recording file was added to Foxglove.
     #[serde(rename = "createdAt")]
     pub created_at: DateTime<Utc>,

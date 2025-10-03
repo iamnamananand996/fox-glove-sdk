@@ -1,4 +1,4 @@
-use serde::{Deserialize, Serialize};
+pub use crate::prelude::*;
 
 /// A topic to which messages can be published.
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, Hash)]
